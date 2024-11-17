@@ -1,8 +1,21 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from jinja2 import ChoiceLoader, FileSystemLoader
+import os
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder='assignment/templates',
+    static_folder='assignment/static'
+)
+
+# Bifurcate my project components
+app.jinja_loader = ChoiceLoader([
+    FileSystemLoader(os.path.join(app.root_path, 'assignment', 'templates')), # ./assignment/templates
+    FileSystemLoader(os.path.join(app.root_path, 'templates'))  # ./templates
+])
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)  # Initialize the database
 
@@ -14,6 +27,7 @@ class Todo(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.id
 
+# Uncomment the following two lines to create the db tables:
 # with app.app_context():
 #    db.create_all()
 
@@ -34,7 +48,7 @@ def index():
         tasks = Todo.query.order_by(Todo.date_created).all()  # .all could also be .first
         return render_template('index.html', tasks=tasks)
 
-@app.route('/assignment/delete/<int:id>')
+@app.route('/assignment/delete/<int:id>', methods=['POST'])
 def delete(id):
     task_to_delete = Todo.query.get_or_404(id)
 
@@ -45,7 +59,7 @@ def delete(id):
     except:
         return 'There was a problem deleting that task'
     
-@app.route('/assignmentupdate/<int:id>', methods=['GET', 'POST'])
+@app.route('/assignment/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
     task = Todo.query.get_or_404(id)
 
@@ -59,6 +73,14 @@ def update(id):
     else:
         return render_template('update.html', task=task)
 
+@app.route('/final')
+def final():
+    # Placeholder until I create my final project
+    return render_template('home.html')
+
+@app.route('/')
+def home():
+    return render_template('home.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

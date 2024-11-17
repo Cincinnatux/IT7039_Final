@@ -17,7 +17,7 @@ class Todo(db.Model):
 # with app.app_context():
 #    db.create_all()
 
-@app.route('/', methods=['POST', 'GET'])  # This allows us to send data to our database
+@app.route('/assignment', methods=['POST', 'GET'])  # This allows us to send data to our database
 def index():
     if request.method == 'POST':
         task_content = request.form['content']  # References our form's 'content' input
@@ -26,7 +26,7 @@ def index():
         try:
             db.session.add(new_task)
             db.session.commit()
-            return redirect('/')
+            return redirect('/assignment')
         except:
             return 'There was an issue adding your task'
         
@@ -34,18 +34,18 @@ def index():
         tasks = Todo.query.order_by(Todo.date_created).all()  # .all could also be .first
         return render_template('index.html', tasks=tasks)
 
-@app.route('/delete/<int:id>')
+@app.route('/assignment/delete/<int:id>')
 def delete(id):
     task_to_delete = Todo.query.get_or_404(id)
 
     try:
         db.session.delete(task_to_delete)
         db.session.commit()
-        return redirect('/')
+        return redirect('/assignment')
     except:
         return 'There was a problem deleting that task'
     
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
+@app.route('/assignmentupdate/<int:id>', methods=['GET', 'POST'])
 def update(id):
     task = Todo.query.get_or_404(id)
 
@@ -53,7 +53,7 @@ def update(id):
        task.content = request.form['content'] 
        try:
            db.session.commit()
-           return redirect('/')
+           return redirect('/assignment')
        except:
            return 'There was an issue updating your task'
     else:

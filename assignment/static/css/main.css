@@ -1,0 +1,107 @@
+body {
+    background-color: rgb(105, 112, 97);
+    color: hsla(120, 20%, 12%, 1);
+    font-family: sans-serif;
+    font-size: 1rem;
+    margin: 0 auto;
+
+    /* Flexbox */
+    display: flex;
+    justify-content: center;
+    /* align-items: center; *//* For vertical centering */
+    min-height: 100vh;
+}
+#grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "header"
+        "mobile-nav"
+        "main"
+        "aside"
+        "footer"
+}
+.box {
+    padding: 1rem;
+    text-align: center;
+}
+.box a {
+    font-size: 3rem;
+    line-height: 1rem;
+    padding-top: 3rem;
+    padding-bottom: 0;
+}
+.header {
+    grid-area: header;
+}
+.mobile-nav {
+    grid-area: mobile-nav;
+}
+.desktop-nav {
+    display: none;
+    grid-area: desktop-nav;
+}
+.main {
+    grid-area: main;
+}
+.aside {
+    grid-area: aside;
+}
+.footer {
+    grid-area: footer;
+}
+a {
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    text-decoration: none;
+}
+a:link {
+    color: hsla(30, 20%, 25%, 1)
+}
+a:visited {
+    color: hsla(30, 20%, 15%, 1);
+}
+a:hover {
+    background-color: hsla(30, 20%, 15%, 1);
+    color: hsla(60, 20%, 60%, 1);
+}
+
+td {
+    margin: 0;
+    padding: 5px;
+    text-align: center;
+}
+
+.form {
+    background-color: hsla(120, 20%, 50%, 1);
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+#content {
+    padding: 1rem;
+    border-radius: 0.2rem;
+    width: 20rem;
+}
+
+@media screen and (min-width: 480px) {
+    #grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+          "header"
+          "desktop-nav"
+          "main"
+          "aside"
+          "footer";
+    }
+    .mobile-nav {
+        display: none;
+    }
+    .desktop-nav {
+        display: grid;
+    }
+}

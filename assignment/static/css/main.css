@@ -1,15 +1,9 @@
 body {
     background-color: rgb(105, 112, 97);
-    color: hsla(120, 20%, 12%, 1);
-    font-family: sans-serif;
+    color: hsla(120, 20%, 20%, 1);
+    font-family: "Lexend Deca", sans-serif;
     font-size: 1rem;
     margin: 0 auto;
-
-    /* Flexbox */
-    display: flex;
-    justify-content: center;
-    /* align-items: center; *//* For vertical centering */
-    min-height: 100vh;
 }
 #grid {
     display: grid;
@@ -20,38 +14,58 @@ body {
         "mobile-nav"
         "main"
         "aside"
-        "footer"
+        "footer";
+    margin: 0 auto;
+    max-width: 80rem;
 }
 .box {
-    padding: 1rem;
+    border: 0.1rem solid hsla(30, 20%, 15%, 1);
+    padding: 0;
     text-align: center;
 }
-.box a {
-    font-size: 3rem;
-    line-height: 1rem;
-    padding-top: 3rem;
-    padding-bottom: 0;
-}
 .header {
+    background-color: hsla(30, 20%, 80%, 1);
+    font-family: "Merienda", sans-serif;
+    font-size: 1.3rem;
+    font-weight: bold;
     grid-area: header;
+    letter-spacing: 0.2rem;
+    word-spacing: 1rem;
 }
 .mobile-nav {
+    background-color: hsla(30, 20%, 30%, 1);
     grid-area: mobile-nav;
 }
 .desktop-nav {
+    background-color: hsla(30, 20%, 30%, 1);
+    color: hsla(30, 20%, 90%, 1);
     display: none;
     grid-area: desktop-nav;
+    padding: 0;
+    text-align: right;
+}
+.desktop-nav a {
+    color: hsla(30, 20%, 90%, 1);
+    font-size: 1.2rem;
+    line-height: 1.8rem;
+    padding: 0;
 }
 .main {
+    background-color: hsla(30, 20%, 60%, 1);
     grid-area: main;
 }
 .aside {
+    background-color: hsla(30, 20%, 70%, 1);
     grid-area: aside;
 }
 .footer {
+    background-color: hsla(30, 20%, 80%, 1);
     grid-area: footer;
 }
 a {
+    text-decoration: none;
+}
+nav a {
     border-radius: 0.5rem;
     font-size: 0.7rem;
     font-weight: bold;
@@ -64,7 +78,7 @@ a:link {
 a:visited {
     color: hsla(30, 20%, 15%, 1);
 }
-a:hover {
+nav a:hover {
     background-color: hsla(30, 20%, 15%, 1);
     color: hsla(60, 20%, 60%, 1);
 }
@@ -93,14 +107,12 @@ input[type="text"] {
 
 @media screen and (min-width: 480px) {
     #grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 18rem 3fr;
         grid-template-rows: auto;
         grid-template-areas:
-          "header"
-          "desktop-nav"
-          "main"
-          "aside"
-          "footer";
+          "desktop-nav header"
+          "main main"
+          "footer aside";
     }
     .mobile-nav {
         display: none;

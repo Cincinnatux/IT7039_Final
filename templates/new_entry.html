@@ -1,29 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Home</title>
-        <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
-    </head>
-    <body>
-        <div id="grid">
-            <header class="box header">
-                <h1>Michael Sullivan's Home Page</h1>
-            </header>
-            <nav class="box mobile-nav">
-                <a href="{{ url_for('home') }}">Home Page</a>
-                <a href="{{ url_for('final' )}}">Enter New Bottle</a>
-                <a href="{{ url_for('random_flight' )}}">Get a Random Flight</a>
-                <a href="{{ url_for('analyze_inventory' )}}">Analyze Current Bottles</a>
-            </nav>
-            <main class="box main"></main>
-            <nav class="box desktop-nav">
-                <a href="{{ url_for('home') }}">Home Page</a>
-                <a href="{{ url_for('final' )}}">Enter New Bottle</a>
-                <a href="{{ url_for('random_flight' )}}">Get a Random Flight</a>
-                <a href="{{ url_for('analyze_inventory' )}}">Analyze Current Bottles</a>
-            </nav>
-            <aside class="box aside"></aside>
-            <footer class="box footer"></footer>
-        </div>
-    </body>
-</html>
+{% extends 'base.html' %}
+
+{% block head %}
+<!--Enter your <head> code here-->
+<title>Home</title>
+{% endblock %} 
+
+{% block body %}
+<!--Enter your <body> code here-->
+<div id="grid">
+    <header class="box header">
+        <h1>Add a New Bottle!</h1>
+    </header>
+    <nav class="box mobile-nav">
+        <a href="{{ url_for('home') }}">Home Page</a>
+        <a href="{{ url_for('final' )}}">Enter New Bottle</a>
+        <a href="{{ url_for('random_flight' )}}">Get a Random Flight</a>
+        <a href="{{ url_for('analyze_inventory' )}}">Analyze Current Bottles</a>
+    </nav>
+    <main class="box main">
+        {% if bottles|length < 1 %}
+        <p style="font-size:0.7rem;">There is no whiskey in this collection. Add 'em if you got 'em!</h4>
+        {% else %}
+
+        <table>
+            <tr>
+                <th>Task</th>
+                <th>Added</th>
+                <th>Actions</th>
+            </tr>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.content }}</td>
+                    <td>{{ task.date_created.date() }}</td>
+                    <td>
+                        <a href="{{ url_for('delete', id=task.id) }}">Delete</a>
+                        <br>
+                        <a href="{{ url_for('update', id=task.id) }}">Update</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+        
+        <form action="{{ url_for('index') }}" method="POST">
+            <input type="text" name="content" id="content">
+            <input type="submit" value="Add Task">
+        </form>
+        <a href="{{ url_for('home') }}">Go Back to Homepage</a>
+    </main>
+    <nav class="box desktop-nav">
+        <a href="{{ url_for('home') }}">Home Page&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a href="{{ url_for('final' )}}">Enter New Bottle&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a href="{{ url_for('random_flight' )}}">Get a Random Flight&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a href="{{ url_for('analyze_inventory' )}}">Analyze Current Bottles&nbsp;&nbsp;&nbsp;&nbsp;</a>
+    </nav>
+    <aside class="box aside"></aside>
+    <footer class="box footer"></footer>
+</div>
+{% endblock %} 

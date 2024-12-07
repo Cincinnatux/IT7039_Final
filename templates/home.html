@@ -1,25 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Home</title>
-        <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
-    </head>
-    <body>
-        <div id="grid">
-            <header class="box header">
-                <h1>Michael Sullivan's Home Page</h1>
-            </header>
-            <nav class="box mobile-nav">
-                <a href="{{ url_for('index') }}">Task Manager</a>
-                <a href="{{ url_for('final' )}}">Final Project</a>
-            </nav>
-            <main class="box main"></main>
-            <nav class="box desktop-nav">
-                <a href="{{ url_for('index') }}">Task Manager</a>
-                <a href="{{ url_for('final' )}}">Final Project</a>
-            </nav>
-            <aside class="box aside"></aside>
-            <footer class="box footer"></footer>
-        </div>
-    </body>
-</html>
+{% extends 'base.html' %}
+
+{% block head %}
+<!--Enter your <head> code here-->
+<title>Home</title>
+{% endblock %} 
+
+{% block body %}
+<!--Enter your <body> code here-->
+<div id="grid">
+    <header class="box header">
+        <h1>Michael Sullivan's Home Page</h1>
+    </header>
+    <nav class="box mobile-nav">
+        <a href="{{ url_for('index') }}">Task Manager</a>
+        <a href="{{ url_for('final') }}">Final Project</a>
+    </nav>
+    <main class="box main"></main>
+    <nav class="box desktop-nav">
+        <a href="{{ url_for('index') }}">Task Manager</a>
+        <a href="{{ url_for('final') }}">Final Project</a>
+    </nav>
+    <aside class="box aside"></aside>
+    <footer class="box footer"></footer>
+</div>
+{% endblock %} 

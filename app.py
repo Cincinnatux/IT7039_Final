@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from jinja2 import ChoiceLoader, FileSystemLoader
@@ -18,6 +19,7 @@ app.jinja_loader = ChoiceLoader([
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)  # Initialize the database
+migrate = Migrate(app, db)  # Initialize Flask-Migrate
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -75,8 +77,19 @@ def update(id):
 
 @app.route('/final')
 def final():
-    # Placeholder until I create my final project
-    return render_template('home.html')
+    return render_template('new_entry.html')
+
+@app.route('/new_entry')  # New route for the new_entry page
+def new_entry():
+    return render_template('new_entry.html')
+
+@app.route('/analyze_inventory')  # New route for analyze_inventory page
+def analyze_inventory():
+    return render_template('analyze_inventory.html')
+
+@app.route('/random_flight')  # New route for random_flight page
+def random_flight():
+    return render_template('random_flight.html')
 
 @app.route('/')
 def home():

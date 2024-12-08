@@ -77,6 +77,19 @@ class ParentCompany(db.Model):
 
     def __repr__(self):
         return f"<ParentCompany {self.parent_company_name}>"
+    
+    def to_dict(self):
+        return {
+            'parent_company_id': self.parent_company_id,
+            'parent_company_name': self.parent_company_name,
+            'website': self.website,
+            'address_1': self.address_1,
+            'address_2': self.address_2,
+            'city': self.city,
+            'state': self.state,
+            'postal_code': self.postal_code,
+            'country': self.country
+        }
 
 class Distillery(db.Model):
     __tablename__ = 'distilleries'
@@ -95,6 +108,20 @@ class Distillery(db.Model):
 
     def __repr__(self):
         return f"<Distillery {self.distillery_name}>"
+    
+    def to_dict(self):
+        return {
+            'dsp' : self.dsp,
+            'distillery_name' : self.distillery_name,
+            'parent_company_id' : self.parent_company_id,
+            'website' : self.website,
+            'address_1' : self.address_1,
+            'address_2' : self.address_2,
+            'city' : self.city,
+            'state' : self.state,
+            'postal_code' : self.postal_code,
+            'country' : self.country
+        }
 
 class Brand(db.Model):
     __tablename__ = 'brands'
@@ -107,6 +134,14 @@ class Brand(db.Model):
 
     def __repr__(self):
         return f"<Brand {self.brand_name}>"
+    
+    def to_dict(self):
+        return {
+            'brand_id' : self.brand_id,
+            'brand_name' : self.brand_name,
+            'category' : self.category,
+            'distillery_id' : self.distillery_id
+        }
 
 class Bottle(db.Model):
     __tablename__ = 'bottles'
@@ -142,6 +177,39 @@ class Bottle(db.Model):
     
     def __repr__(self):
         return f"<Bottle {self.expression}>"
+    
+    def to_dict(self):
+        return {
+            'bottle_id' : self.bottle_id,
+            'brand_id' : self.brand_id,
+            'expression' : self.expression,
+            'volume_ml' : self.volume_ml,
+            'proof' : self.proof,
+            'stated_age' : self.stated_age,
+            'estimated_age' : self.estimated_age,
+            'primary_grain' : self.primary_grain,
+            'primary_grain_percentage' : self.primary_grain_percentage,
+            'secondary_grain' : self.secondary_grain,
+            'secondary_grain_percentage' : self.secondary_grain_percentage,
+            'tertiary_grain' : self.tertiary_grain,
+            'tertiary_grain_percentage' : self.tertiary_grain_percentage,
+            'quaternary_grain' : self.quaternary_grain,
+            'quaternary_grain_percentage' : self.quaternary_grain_percentage,
+            'source' : self.source,
+            'price_paid' : self.price_paid,
+            'srp' : self.srp,
+            'date_purchased' : self.date_purchased,
+            'date_distilled' : self.date_distilled,
+            'date_bottled' : self.date_bottled,
+            'date_opened' : self.date_opened,
+            'date_emptied' : self.date_emptied,
+            'single_barrel' : self.single_barrel,
+            'chill_filtered' : self.chill_filtered,
+            'bottled_in_bond' : self.bottled_in_bond,
+            'peated' : self.peated,
+            'finished' : self.finished,
+            'notes' : self.notes
+        }
     
 # Routes Definitions
 
@@ -227,6 +295,90 @@ def random_flight():
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/search_records', methods=['POST'])
+def search_records():
+    data = request.form
+    table = data.get('table')
+
+    if not table:
+        app.logger.warning("No table specified in search_records.")
+        return jsonify({'success': False, 'error': 'No table specified.'}), 400
+
+    try:
+        if table == 'parent_company':
+            name = data.get('parent_company_name', '').strip()
+            city = data.get('city', '').strip()
+            country = data.get('country', '').strip()
+
+            query = ParentCompany.query
+            if name:
+                query = query.filter(ParentCompany.parent_company_name.ilike(f'%{name}%'))
+            if city:
+                query = query.filter(ParentCompany.city.ilike(f'%{city}%'))
+            if country:
+                query = query.filter(ParentCompany.country.ilike(f'%{country}%'))
+
+            results = query.all()
+            results = [record.to_dict() for record in results]
+
+        elif table == 'distillery':
+            distillery_name = data.get('distillery_name', '').strip()
+            parent_company_id = data.get('parent_company_id', '').strip()
+            country = data.get('country', '').strip()
+
+            query = Distillery.query
+            if distillery_name:
+                query = query.filter(Distillery.distillery_name.ilike(f'%{distillery_name}%'))
+            if parent_company_id:
+                query = query.filter(Distillery.parent_company_id == parent_company_id)
+            if country:
+                query = query.filter(Distillery.country.ilike(f'%{country}%'))
+
+            results = query.all()
+            results = [record.to_dict() for record in results]
+
+        elif table == 'brand':
+            brand_name = data.get('brand_name', '').strip()
+            category = data.get('category', '').strip()
+            distillery_id = data.get('distillery_id', '').strip()
+
+            query = Brand.query
+            if brand_name:
+                query = query.filter(Brand.brand_name.ilike(f'%{brand_name}%'))
+            if category:
+                query = query.filter(Brand.category.ilike(f'%{category}%'))
+            if distillery_id:
+                query = query.filter(Brand.distillery_id == distillery_id)
+
+            results = query.all()
+            results = [record.to_dict() for record in results]
+
+        elif table == 'bottle':
+            expression = data.get('expression', '').strip()
+            brand_id = data.get('brand_id', '').strip()
+            country = data.get('country', '').strip()
+
+            query = Bottle.query
+            if expression:
+                query = query.filter(Bottle.expression.ilike(f'%{expression}%'))
+            if brand_id:
+                query = query.filter(Bottle.brand_id == brand_id)
+            if country:
+                query = query.filter(Bottle.country.ilike(f'%{country}%'))
+
+            results = query.all()
+            results = [record.to_dict() for record in results]
+
+        else:
+            app.logger.warning(f"Invalid table specified in search_records: {table}")
+            return jsonify({'success': False, 'error': 'Invalid table specified.'}), 400
+
+        return jsonify({'success': True, 'results': results}), 200
+
+    except Exception as e:
+        app.logger.error(f"Error in search_records: {e}", exc_info=True)
+        return jsonify({'success': False, 'error': 'An error occurred during the search.'}), 500
 
 # New Routes for Adding Entities
 

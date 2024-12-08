@@ -132,4 +132,13 @@ class Bottle(db.Model):
     date_distilled = db.Column(db.Date)
     date_bottled = db.Column(db.Date)
     date_opened = db.Column(db.Date)
-    date_emptied = db.Col
+    date_emptied = db.Col  # This line has the typo
+    single_barrel = db.Column(db.Boolean)
+    chill_filtered = db.Column(db.Boolean)
+    bottled_in_bond = db.Column(db.Boolean)
+    peated = db.Column(db.Boolean)
+    finished = db.Column(db.Boolean)
+    notes = db.Column(db.Text)
+    
+    def __repr__(self):
+        return f"<Bottle {self.expression}>"

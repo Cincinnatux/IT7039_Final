@@ -627,7 +627,45 @@ def add_bottle():
         app.logger.error(f"Error adding Bottle: {e}", exc_info=True)
         return jsonify({'success': False, 'error': 'Error adding Bottle.'}), 500
     
-    # return redirect(url_for('new_entry'))
+@app.route('/analyze_inventory', methods=['GET'])
+def analyze_inventory():
+    try:
+        # Query all bottles
+        all_bottles = Bottle.query.all()
+        total_bottles = len(all_bottles)
+        
+        # Query bottles without date_emptied
+        bottles_not_emptied = Bottle.query.filter(Bottle.date_emptied == None).all()
+        total_not_emptied = len(bottles_not_emptied)
+        
+        # Example: Categorize bottles by brand for the first pie chart
+        brand_counts = db.session.query(Brand.brand_name, db.func.count(Bottle.bottle_id))\
+            .join(Bottle, Brand.brand_id == Bottle.brand_id)\
+            .group_by(Brand.brand_name).all()
+        
+        # Example: Categorize bottles not emptied by brand for the second pie chart
+        brand_not_emptied_counts = db.session.query(Brand.brand_name, db.func.count(Bottle.bottle_id))\
+            .join(Bottle, Brand.brand_id == Bottle.brand_id)\
+            .filter(Bottle.date_emptied == None)\
+            .group_by(Brand.brand_name).all()
+        
+        # Prepare data for Chart.js
+        chart1_labels = [brand for brand, count in brand_counts]
+        chart1_values = [count for brand, count in brand_counts]
+        
+        chart2_labels = [brand for brand, count in brand_not_emptied_counts]
+        chart2_values = [count for brand, count in brand_not_emptied_counts]
+        
+        return render_template('analyze_inventory.html',
+                               total_bottles=total_bottles,
+                               total_not_emptied=total_not_emptied,
+                               chart1_labels=chart1_labels,
+                               chart1_values=chart1_values,
+                               chart2_labels=chart2_labels,
+                               chart2_values=chart2_values)
+    except Exception as e:
+        app.logger.error(f"Error rendering analyze_inventory: {e}", exc_info=True)
+        return render_template('500.html'), 500
 
 # Error Handlers
 

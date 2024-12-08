@@ -6,12 +6,24 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
         <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&family=Merienda:wght@300..900&display=swap" rel="stylesheet">
         {% block head %}{% endblock %}    
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    
+        {% block body %}
+        <!-- Default body content -->
+        {% endblock %}
         <p style="text-align: center;" xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
             <a property="dct:title" rel="cc:attributionURL" href="http://ec2-3-147-83-221.us-east-2.compute.amazonaws.com:8080/final">
                 Whiskey Collection Management Interface

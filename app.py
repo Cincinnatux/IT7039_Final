@@ -198,12 +198,12 @@ class Bottle(db.Model):
             'source' : self.source,
             'price_paid' : self.price_paid,
             'srp' : self.srp,
-            'date_purchased' : self.date_purchased,
-            'date_distilled' : self.date_distilled,
-            'date_bottled' : self.date_bottled,
-            'date_opened' : self.date_opened,
-            'date_emptied' : self.date_emptied,
-            'single_barrel' : self.single_barrel,
+            'date_purchased': self.date_purchased.isoformat() if self.date_purchased else None,
+            'date_distilled': self.date_distilled.isoformat() if self.date_distilled else None,
+            'date_bottled': self.date_bottled.isoformat() if self.date_bottled else None,
+            'date_opened': self.date_opened.isoformat() if self.date_opened else None,
+            'date_emptied': self.date_emptied.isoformat() if self.date_emptied else None,
+            'single_barrel': self.single_barrel,
             'chill_filtered' : self.chill_filtered,
             'bottled_in_bond' : self.bottled_in_bond,
             'peated' : self.peated,
@@ -537,104 +537,95 @@ def add_brand():
 
 @app.route('/add_bottle', methods=['POST'])
 def add_bottle():
-    brand_id = request.form.get('brand_id').strip()
-    expression = request.form.get('expression').strip()
-    volume_ml = request.form.get('volume_ml').strip()
-    proof = request.form.get('proof').strip()
-    stated_age = request.form.get('stated_age').strip()
-    estimated_age = request.form.get('estimated_age').strip()
-    primary_grain = request.form.get('primary_grain').strip()
-    primary_grain_percentage = request.form.get('primary_grain_percentage').strip()
-    secondary_grain = request.form.get('secondary_grain').strip()
-    secondary_grain_percentage = request.form.get('secondary_grain_percentage').strip()
-    tertiary_grain = request.form.get('tertiary_grain').strip()
-    tertiary_grain_percentage = request.form.get('tertiary_grain_percentage').strip()
-    quaternary_grain = request.form.get('quaternary_grain').strip()
-    quaternary_grain_percentage = request.form.get('quaternary_grain_percentage').strip()
-    source = request.form.get('source').strip()
-    price_paid = request.form.get('price_paid').strip()
-    srp = request.form.get('srp').strip()
-    date_purchased = request.form.get('date_purchased').strip()
-    date_distilled = request.form.get('date_distilled').strip()
-    date_bottled = request.form.get('date_bottled').strip()
-    date_opened = request.form.get('date_opened').strip()
-    date_emptied = request.form.get('date_emptied').strip()
-    single_barrel = True if request.form.get('single_barrel') == 'on' else False
-    chill_filtered = True if request.form.get('chill_filtered') == 'on' else False
-    bottled_in_bond = True if request.form.get('bottled_in_bond') == 'on' else False
-    peated = True if request.form.get('peated') == 'on' else False
-    finished = True if request.form.get('finished') == 'on' else False
-    notes = request.form.get('notes').strip()
-
-    if not brand_id:
-        flash('Brand is required.', 'error')
-        app.logger.warning("Brand ID is missing.")
-        return jsonify({'success': False, 'error': 'Brand is required.'}), 400
-
-    # Convert numerical fields to appropriate types
     try:
-        volume_ml = int(volume_ml) if volume_ml else None
-        proof = float(proof) if proof else None
-        stated_age = float(stated_age) if stated_age else None
-        estimated_age = float(estimated_age) if estimated_age else None
-        primary_grain_percentage = float(primary_grain_percentage) if primary_grain_percentage else None
-        secondary_grain_percentage = float(secondary_grain_percentage) if secondary_grain_percentage else None
-        tertiary_grain_percentage = float(tertiary_grain_percentage) if tertiary_grain_percentage else None
-        quaternary_grain_percentage = float(quaternary_grain_percentage) if quaternary_grain_percentage else None
-        price_paid = float(price_paid) if price_paid else None
-        srp = float(srp) if srp else None
-    except ValueError as ve:
-        flash('Invalid numerical input.', 'error')
-        app.logger.warning(f"Invalid numerical input: {ve}")
-        return redirect(url_for('new_entry'))
-
-    new_bottle = Bottle(
-        brand_id=brand_id,
-        expression=expression,
-        volume_ml=volume_ml,
-        proof=proof,
-        stated_age=stated_age,
-        estimated_age=estimated_age,
-        primary_grain=primary_grain,
-        primary_grain_percentage=primary_grain_percentage,
-        secondary_grain=secondary_grain,
-        secondary_grain_percentage=secondary_grain_percentage,
-        tertiary_grain=tertiary_grain,
-        tertiary_grain_percentage=tertiary_grain_percentage,
-        quaternary_grain=quaternary_grain,
-        quaternary_grain_percentage=quaternary_grain_percentage,
-        source=source,
-        price_paid=price_paid,
-        srp=srp,
-        date_purchased=date_purchased,
-        date_distilled=date_distilled,
-        date_bottled=date_bottled,
-        date_opened=date_opened,
-        date_emptied=date_emptied,
-        single_barrel=single_barrel,
-        chill_filtered=chill_filtered,
-        bottled_in_bond=bottled_in_bond,
-        peated=peated,
-        finished=finished,
-        notes=notes
-    )
-
-    try:
+        brand_id = request.form.get('brand_id')
+        expression = request.form.get('expression').strip()
+        volume_ml = request.form.get('volume_ml')
+        proof = request.form.get('proof')
+        stated_age = request.form.get('stated_age')
+        estimated_age = request.form.get('estimated_age')
+        primary_grain = request.form.get('primary_grain').strip()
+        primary_grain_percentage = request.form.get('primary_grain_percentage')
+        secondary_grain = request.form.get('secondary_grain').strip()
+        secondary_grain_percentage = request.form.get('secondary_grain_percentage')
+        tertiary_grain = request.form.get('tertiary_grain').strip()
+        tertiary_grain_percentage = request.form.get('tertiary_grain_percentage')
+        quaternary_grain = request.form.get('quaternary_grain').strip()
+        quaternary_grain_percentage = request.form.get('quaternary_grain_percentage')
+        source = request.form.get('source').strip()
+        price_paid = request.form.get('price_paid')
+        srp = request.form.get('srp')
+        date_purchased = request.form.get('date_purchased')
+        date_distilled = request.form.get('date_distilled')
+        date_bottled = request.form.get('date_bottled')
+        date_opened = request.form.get('date_opened')
+        date_emptied = request.form.get('date_emptied')
+        single_barrel = request.form.get('single_barrel') == 'on'
+        chill_filtered = request.form.get('chill_filtered') == 'on'
+        bottled_in_bond = request.form.get('bottled_in_bond') == 'on'
+        peated = request.form.get('peated') == 'on'
+        finished = request.form.get('finished') == 'on'
+        notes = request.form.get('notes').strip()
+        
+        # Helper function to parse dates
+        def parse_date(date_str):
+            if date_str:
+                try:
+                    return datetime.strptime(date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    return None
+            return None
+        
+        # Convert date strings to date objects
+        date_purchased = parse_date(date_purchased)
+        date_distilled = parse_date(date_distilled)
+        date_bottled = parse_date(date_bottled)
+        date_opened = parse_date(date_opened)
+        date_emptied = parse_date(date_emptied)
+        
+        # Create a new Bottle instance
+        new_bottle = Bottle(
+            brand_id=brand_id,
+            expression=expression,
+            volume_ml=int(volume_ml) if volume_ml else None,
+            proof=float(proof) if proof else None,
+            stated_age=float(stated_age) if stated_age else None,
+            estimated_age=float(estimated_age) if estimated_age else None,
+            primary_grain=primary_grain,
+            primary_grain_percentage=float(primary_grain_percentage) if primary_grain_percentage else None,
+            secondary_grain=secondary_grain,
+            secondary_grain_percentage=float(secondary_grain_percentage) if secondary_grain_percentage else None,
+            tertiary_grain=tertiary_grain,
+            tertiary_grain_percentage=float(tertiary_grain_percentage) if tertiary_grain_percentage else None,
+            quaternary_grain=quaternary_grain,
+            quaternary_grain_percentage=float(quaternary_grain_percentage) if quaternary_grain_percentage else None,
+            source=source,
+            price_paid=float(price_paid) if price_paid else None,
+            srp=float(srp) if srp else None,
+            date_purchased=date_purchased,
+            date_distilled=date_distilled,
+            date_bottled=date_bottled,
+            date_opened=date_opened,
+            date_emptied=date_emptied,
+            single_barrel=single_barrel,
+            chill_filtered=chill_filtered,
+            bottled_in_bond=bottled_in_bond,
+            peated=peated,
+            finished=finished,
+            notes=notes
+        )
+        
         db.session.add(new_bottle)
         db.session.commit()
+        
+        flash('Bottle added successfully!', 'success')
         app.logger.info(f"Bottle added successfully: {expression}")
-        return jsonify({
-            'success': True,
-            'bottle_id': new_bottle.bottle_id,
-            'expression': new_bottle.expression
-        }), 201
+        return jsonify({'success': True, 'bottle_id': new_bottle.bottle_id, 'expression': new_bottle.expression}), 201
     except Exception as e:
         db.session.rollback()
+        flash('Error adding Bottle: ' + str(e), 'error')
         app.logger.error(f"Error adding Bottle: {e}", exc_info=True)
-        return jsonify({
-            'success': False,
-            'error': 'Error adding Bottle: ' + str(e)
-        }), 500
+        return jsonify({'success': False, 'error': 'Error adding Bottle.'}), 500
     
     # return redirect(url_for('new_entry'))
 

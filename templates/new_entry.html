@@ -606,6 +606,7 @@
             url: "{{ url_for('add_bottle') }}",
             type: "POST",
             data: $(this).serialize(),
+            dataType: "json",
             success: function(response){
                 // Optionally, refresh the page or display a success message
                 alert('Bottle added successfully!');
@@ -684,7 +685,10 @@
                                     <td>${record.state || ''}</td>
                                     <td>${record.postal_code || ''}</td>
                                     <td>${record.country || ''}</td>
-                                    <td><button class="btn btn-danger btn-sm" onclick="deleteRecord('parent_company', ${record.parent_company_id})">Delete</button></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="openEditModal('parent_company', ${record.parent_company_id})">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteRecord('parent_company', ${record.parent_company_id})">Delete</button>
+                                    </td>
                                   </tr>`;
                     });
                     table += '</tbody></table>';
@@ -734,7 +738,10 @@
                                     <td>${record.state || ''}</td>
                                     <td>${record.postal_code || ''}</td>
                                     <td>${record.country || ''}</td>
-                                    <td><button class="btn btn-danger btn-sm" onclick="deleteRecord('distillery', '${record.dsp}')">Delete</button></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="openEditModal('distillery', '${record.dsp}')">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteRecord('distillery', '${record.dsp}')">Delete</button>
+                                    </td>
                                   </tr>`;
                     });
                     table += '</tbody></table>';
@@ -778,7 +785,10 @@
                                     <td>${record.brand_name}</td>
                                     <td>${record.category || ''}</td>
                                     <td>${record.distillery_id}</td>
-                                    <td><button class="btn btn-danger btn-sm" onclick="deleteRecord('brand', ${record.brand_id})">Delete</button></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="openEditModal('brand', ${record.brand_id})">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteRecord('brand', ${record.brand_id})">Delete</button>
+                                    </td>
                                   </tr>`;
                     });
                     table += '</tbody></table>';
@@ -831,7 +841,10 @@
                                     <td>${record.secondary_grain_percentage || ''}</td>
                                     <!-- Add other fields as needed -->
                                     <td>...</td>
-                                    <td><button class="btn btn-danger btn-sm" onclick="deleteRecord('bottle', ${record.bottle_id})">Delete</button></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="openEditModal('bottle', ${record.bottle_id})">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteRecord('bottle', ${record.bottle_id})">Delete</button>
+                                        </td>
                                   </tr>`;
                     });
                     table += '</tbody></table>';
@@ -849,4 +862,41 @@
     });
 
 </script>
+<!-- Edit Record Modal -->
+<div class="modal fade" id="editRecordModal" tabindex="-1" aria-labelledby="editRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="editRecordForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editRecordModalLabel">Edit Record</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Dynamic Form Fields Will Be Injected Here -->
+            <div id="editFormFields">
+              <!-- Example Fields (Adjust Based on Model) -->
+              <div class="mb-3">
+                <label for="edit_name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="edit_name" name="name" required>
+              </div>
+              <!-- Add other fields as necessary -->
+              <!-- Date Fields -->
+              <div class="mb-3">
+                <label for="edit_date_purchased" class="form-label">Date Purchased</label>
+                <input type="date" class="form-control" id="edit_date_purchased" name="date_purchased">
+              </div>
+              <!-- Continue adding fields based on Bottle model -->
+            </div>
+            <!-- Hidden Fields -->
+            <input type="hidden" id="edit_table" name="table">
+            <input type="hidden" id="edit_id" name="id">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock %}

@@ -11,6 +11,14 @@ app = Flask(
     static_folder='assignment/static'
 )
 
+# Configure the absolute path for the SQLite database
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'test.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
 # Configure secret key for flashing messages
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Replace with a secure key in production
 
@@ -19,10 +27,6 @@ app.jinja_loader = ChoiceLoader([
     FileSystemLoader(os.path.join(app.root_path, 'assignment', 'templates')),  # ./assignment/templates
     FileSystemLoader(os.path.join(app.root_path, 'templates'))  # ./templates
 ])
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/test.db'
-db = SQLAlchemy(app)  # Initialize the database
-migrate = Migrate(app, db)  # Initialize Flask-Migrate
 
 # Model Definitions
 class Todo(db.Model):

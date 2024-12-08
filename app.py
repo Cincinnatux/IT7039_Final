@@ -200,7 +200,10 @@ def update(id):
 
 @app.route('/final')
 def final():
-    return render_template('new_entry.html')
+    parent_companies = ParentCompany.query.all()
+    distilleries = Distillery.query.all()
+    brands = Brand.query.all()
+    return render_template('new_entry.html', parent_companies=parent_companies, distilleries=distilleries, brands=brands)
 
 @app.route('/new_entry', methods=['GET'])
 def new_entry():

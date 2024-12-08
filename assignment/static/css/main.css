@@ -53,6 +53,7 @@ body {
 .main {
     background-color: hsla(30, 20%, 60%, 1);
     grid-area: main;
+    padding: 1rem 0;
 }
 .aside {
     background-color: hsla(30, 20%, 70%, 1);

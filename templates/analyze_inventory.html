@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<!--Enter your <head> code here-->
-<title>Home</title>
+<!--Enter <head> code here-->
+<title>Analyze Inventory</title>
+<!-- Include Bootstrap CSS for styling (optional) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Include Chart.js via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %} 
 
 {% block body %}
-<!--Enter your <body> code here-->
+<!--Enter <body> code here-->
 <div id="grid">
     <header class="box header">
         <h1>Current Stats</h1>
@@ -17,7 +21,149 @@
         <a href="{{ url_for('random_flight' )}}">Get a Random Flight</a>
         <a href="{{ url_for('analyze_inventory' )}}">Analyze Current Bottles</a>
     </nav>
-    <main class="box main"></main>
+    <main class="box main">
+        <div class="container my-5">
+            <h1 class="mb-4">Inventory Analysis</h1>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>All Bottles by Brand Category</h3>
+                    <canvas id="allBottlesChart"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <h3>Bottles Not Emptied by Brand Category</h3>
+                    <canvas id="notEmptiedChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // Assign Jinja2 variables to JavaScript constants
+            const chart1Labels = {{ chart1_labels | tojson }};
+            const chart1Values = {{ chart1_values | tojson }};
+            const chart2Labels = {{ chart2_labels | tojson }};
+            const chart2Values = {{ chart2_values | tojson }};
+            
+            // Data for All Bottles Chart
+            const allBottlesData = {
+                labels: chart1Labels,
+                datasets: [{
+                    label: 'Number of Bottles',
+                    data: chart1Values,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(199, 199, 199, 0.6)',
+                        'rgba(83, 102, 255, 0.6)',
+                        'rgba(255, 102, 255, 0.6)',
+                        'rgba(102, 255, 178, 0.6)'
+                        // Add more colors as needed
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)',
+                        'rgba(255, 102, 255, 1)',
+                        'rgba(102, 255, 178, 1)'
+                        // Add more border colors as needed
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            
+            // Data for Bottles Not Emptied Chart
+            const notEmptiedData = {
+                labels: chart2Labels,
+                datasets: [{
+                    label: 'Number of Bottles Not Emptied',
+                    data: chart2Values,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(199, 199, 199, 0.6)',
+                        'rgba(83, 102, 255, 0.6)',
+                        'rgba(255, 102, 255, 0.6)',
+                        'rgba(102, 255, 178, 0.6)'
+                        // Add more colors as needed
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)',
+                        'rgba(255, 102, 255, 1)',
+                        'rgba(102, 255, 178, 1)'
+                        // Add more border colors as needed
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            
+            // Configuration for All Bottles Chart
+            const configAll = {
+                type: 'pie',
+                data: allBottlesData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'All Bottles by Brand Category'
+                        }
+                    }
+                },
+            };
+            
+            // Configuration for Bottles Not Emptied Chart
+            const configNotEmptied = {
+                type: 'pie',
+                data: notEmptiedData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Bottles Not Emptied by Brand Category'
+                        }
+                    }
+                },
+            };
+            
+            // Render All Bottles Chart
+            const allBottlesCtx = document.getElementById('allBottlesChart').getContext('2d');
+            const allBottlesChart = new Chart(allBottlesCtx, configAll);
+            
+            // Render Bottles Not Emptied Chart
+            const notEmptiedCtx = document.getElementById('notEmptiedChart').getContext('2d');
+            const notEmptiedChart = new Chart(notEmptiedCtx, configNotEmptied);
+        </script>
+        
+        <!-- Include Bootstrap JS for modal functionality (optional) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </main>
     <nav class="box desktop-nav">
         <a href="{{ url_for('home') }}">Home Page&nbsp;&nbsp;&nbsp;&nbsp;</a>
         <a href="{{ url_for('final' )}}">Enter New Bottle&nbsp;&nbsp;&nbsp;&nbsp;</a>

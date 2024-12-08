@@ -284,10 +284,6 @@ def new_entry():
     brands = Brand.query.all()
     return render_template('new_entry.html', parent_companies=parent_companies, distilleries=distilleries, brands=brands)
 
-@app.route('/analyze_inventory')
-def analyze_inventory():
-    return render_template('analyze_inventory.html')
-
 @app.route('/random_flight')
 def random_flight():
     return render_template('random_flight.html')

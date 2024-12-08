@@ -173,12 +173,18 @@ def delete(id):
         db.session.delete(task_to_delete)
         db.session.commit()
         flash('Task deleted successfully!', 'success')
-        return redirect('/assignment')
+        if request.is_json:
+            return jsonify({'success': True}), 200
+        else:
+            return redirect('/assignment')
     except Exception as e:
         db.session.rollback()
         flash('There was a problem deleting that task.', 'error')
         app.logger.error(f"Error deleting task: {e}", exc_info=True)
-        return redirect('/assignment')
+        if request.is_json:
+            return jsonify({'success': False, 'error': 'Error deleting task.'}), 400
+        else:
+            return redirect('/assignment')
     
 @app.route('/assignment/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
@@ -238,14 +244,14 @@ def add_parent_company():
     if not parent_company_name:
         flash('Parent Company Name is required.', 'error')
         app.logger.warning("Parent Company Name is missing.")
-        return redirect(url_for('new_entry'))
+        return jsonify({'success': False, 'error': 'Parent Company Name is required.'}), 400
 
     # Check if the ParentCompany already exists
     existing_company = ParentCompany.query.filter_by(parent_company_name=parent_company_name).first()
     if existing_company:
         flash('Parent Company already exists.', 'error')
         app.logger.warning(f"Attempted to add duplicate Parent Company: {parent_company_name}")
-        return redirect(url_for('new_entry'))
+        return jsonify({'success': False, 'error': 'Parent Company already exists.'}), 400
 
     new_company = ParentCompany(
         parent_company_name=parent_company_name,
@@ -273,7 +279,7 @@ def add_parent_company():
         return jsonify({
             'success': False,
             'error': 'Error adding Parent Company: ' + str(e)
-        }), 400
+        }), 500
 
     # return redirect(url_for('new_entry'))
 
@@ -293,14 +299,14 @@ def add_distillery():
     if not dsp or not distillery_name or not parent_company_id:
         flash('DSP, Distillery Name, and Parent Company are required.', 'error')
         app.logger.warning("DSP, Distillery Name, or Parent Company ID is missing.")
-        return redirect(url_for('new_entry'))
+        return jsonify({'success': False, 'error': 'Distillery Name is required.'}), 400
 
     # Check if the Distillery already exists
     existing_distillery = Distillery.query.filter_by(dsp=dsp).first()
     if existing_distillery:
         flash('Distillery with this DSP already exists.', 'error')
         app.logger.warning(f"Attempted to add duplicate Distillery with DSP: {dsp}")
-        return redirect(url_for('new_entry'))
+        return jsonify({'success': False, 'error': 'That Distillery already exists.'}), 400
 
     new_distillery = Distillery(
         dsp=dsp,
@@ -330,7 +336,7 @@ def add_distillery():
         return jsonify({
             'success': False,
             'error': 'Error adding Distillery: ' + str(e)
-        }), 400
+        }), 500
     
     # return redirect(url_for('new_entry'))
 
@@ -343,14 +349,14 @@ def add_brand():
     if not brand_name or not distillery_id:
         flash('Brand Name and Distillery are required.', 'error')
         app.logger.warning("Brand Name or Distillery ID is missing.")
-        return redirect(url_for('new_entry'))
+        return jsonify({'success': False, 'error': 'Brand is required.'}), 400
 
     # Check if the Brand already exists
     existing_brand = Brand.query.filter_by(brand_name=brand_name, distillery_id=distillery_id).first()
     if existing_brand:
         flash('Brand with this name already exists for the selected Distillery.', 'error')
         app.logger.warning(f"Attempted to add duplicate Brand: {brand_name} for Distillery ID: {distillery_id}")
-        return redirect(url_for('new_entry'))
+        return jsonify({'success': False, 'error': 'That Brand already exists.'}), 400
 
     new_brand = Brand(
         brand_name=brand_name,
@@ -373,7 +379,7 @@ def add_brand():
         return jsonify({
             'success': False,
             'error': 'Error adding Brand: ' + str(e)
-        }), 400
+        }), 500
     
     # return redirect(url_for('new_entry'))
 
@@ -411,7 +417,7 @@ def add_bottle():
     if not brand_id:
         flash('Brand is required.', 'error')
         app.logger.warning("Brand ID is missing.")
-        return redirect(url_for('new_entry'))
+        return jsonify({'success': False, 'error': 'Brand is required.'}), 400
 
     # Convert numerical fields to appropriate types
     try:
@@ -476,7 +482,7 @@ def add_bottle():
         return jsonify({
             'success': False,
             'error': 'Error adding Bottle: ' + str(e)
-        }), 400
+        }), 500
     
     # return redirect(url_for('new_entry'))
 

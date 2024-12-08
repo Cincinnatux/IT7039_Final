@@ -29,6 +29,88 @@ class Todo(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.id
 
+class ParentCompany(db.Model):
+    __tablename__ = 'parent_companies'
+    parent_company_id = db.Column(db.Integer, primary_key=True)
+    parent_company_name = db.Column(db.String(100), unique=True, nullable=False)
+    website = db.Column(db.String(100))
+    address_1 = db.Column(db.String(100))
+    address_2 = db.Column(db.String(100))
+    city = db.Column(db.String(30))
+    state = db.Column(db.String(30))
+    postal_code = db.Column(db.String(15))
+    country = db.Column(db.String(30))
+
+    distilleries = db.relationship('Distillery', backref='parent_company', lazy=True)
+
+    def __repr__(self):
+        return f"<ParentCompany {self.parent_company_name}>"
+
+class Distillery(db.Model):
+    __tablename__ = 'distilleries'
+    dsp = db.Column(db.String(15), primary_key=True)
+    distillery_name = db.Column(db.String(100), unique=True, nullable=False)
+    parent_company_id = db.Column(db.Integer, db.ForeignKey('parent_companies.parent_company_id'), nullable=False)
+    website = db.Column(db.String(100))
+    address_1 = db.Column(db.String(100))
+    address_2 = db.Column(db.String(100))
+    city = db.Column(db.String(30))
+    state = db.Column(db.String(30))
+    postal_code = db.Column(db.String(15))
+    country = db.Column(db.String(30))
+
+    brands = db.relationship('Brand', backref='distillery', lazy=True)
+
+    def __repr__(self):
+        return f"<Distillery {self.distillery_name}>"
+
+class Brand(db.Model):
+    __tablename__ = 'brands'
+    brand_id = db.Column(db.Integer, primary_key=True)
+    brand_name = db.Column(db.String(50), nullable=False)
+    category = db.Column(db.String(30))
+    distillery_id = db.Column(db.String(15), db.ForeignKey('distilleries.dsp'), nullable=False)
+
+    bottles = db.relationship('Bottle', backref='brand', lazy=True)
+
+    def __repr__(self):
+        return f"<Brand {self.brand_name}>"
+
+class Bottle(db.Model):
+    __tablename__ = 'bottles'
+    bottle_id = db.Column(db.Integer, primary_key=True)
+    brand_id = db.Column(db.Integer, db.ForeignKey('brands.brand_id'), nullable=False)
+    expression = db.Column(db.String(100))
+    volume_ml = db.Column(db.Integer)
+    proof = db.Column(db.Float)
+    stated_age = db.Column(db.Float)
+    estimated_age = db.Column(db.Float)
+    primary_grain = db.Column(db.String(15))
+    primary_grain_percentage = db.Column(db.Float)
+    secondary_grain = db.Column(db.String(15))
+    secondary_grain_percentage = db.Column(db.Float)
+    tertiary_grain = db.Column(db.String(15))
+    tertiary_grain_percentage = db.Column(db.Float)
+    quaternary_grain = db.Column(db.String(15))
+    quaternary_grain_percentage = db.Column(db.Float)
+    source = db.Column(db.String(100))
+    price_paid = db.Column(db.Float)
+    srp = db.Column(db.Float)
+    date_purchased = db.Column(db.Date)
+    date_distilled = db.Column(db.Date)
+    date_bottled = db.Column(db.Date)
+    date_opened = db.Column(db.Date)
+    date_emptied = db.Column(db.Date)
+    single_barrel = db.Column(db.Boolean)
+    chill_filtered = db.Column(db.Boolean)
+    bottled_in_bond = db.Column(db.Boolean)
+    peated = db.Column(db.Boolean)
+    finished = db.Column(db.Boolean)
+    notes = db.Column(db.Text)
+
+    def __repr__(self):
+        return f"<Bottle {self.expression}>"
+
 # Uncomment the following two lines to create the db tables:
 # with app.app_context():
 #    db.create_all()

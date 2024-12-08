@@ -261,14 +261,21 @@ def add_parent_company():
     try:
         db.session.add(new_company)
         db.session.commit()
-        flash('Parent Company added successfully!', 'success')
         app.logger.info(f"Parent Company added successfully: {parent_company_name}")
+        return jsonify({
+            'success': True,
+            'parent_company_id': new_company.parent_company_id,
+            'parent_company_name': new_company.parent_company_name
+        }), 201
     except Exception as e:
         db.session.rollback()
-        flash('Error adding Parent Company: ' + str(e), 'error')
         app.logger.error(f"Error adding Parent Company: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Error adding Parent Company: ' + str(e)
+        }), 400
 
-    return redirect(url_for('new_entry'))
+    # return redirect(url_for('new_entry'))
 
 @app.route('/add_distillery', methods=['POST'])
 def add_distillery():
@@ -311,14 +318,21 @@ def add_distillery():
     try:
         db.session.add(new_distillery)
         db.session.commit()
-        flash('Distillery added successfully!', 'success')
         app.logger.info(f"Distillery added successfully: {distillery_name}")
+        return jsonify({
+            'success': True,
+            'dsp': new_distillery.dsp,
+            'distillery_name': new_distillery.distillery_name
+        }), 201
     except Exception as e:
         db.session.rollback()
-        flash('Error adding Distillery: ' + str(e), 'error')
         app.logger.error(f"Error adding Distillery: {e}", exc_info=True)
-
-    return redirect(url_for('new_entry'))
+        return jsonify({
+            'success': False,
+            'error': 'Error adding Distillery: ' + str(e)
+        }), 400
+    
+    # return redirect(url_for('new_entry'))
 
 @app.route('/add_brand', methods=['POST'])
 def add_brand():
@@ -347,14 +361,21 @@ def add_brand():
     try:
         db.session.add(new_brand)
         db.session.commit()
-        flash('Brand added successfully!', 'success')
         app.logger.info(f"Brand added successfully: {brand_name}")
+        return jsonify({
+            'success': True,
+            'brand_id': new_brand.brand_id,
+            'brand_name': new_brand.brand_name
+        }), 201
     except Exception as e:
         db.session.rollback()
-        flash('Error adding Brand: ' + str(e), 'error')
         app.logger.error(f"Error adding Brand: {e}", exc_info=True)
-
-    return redirect(url_for('new_entry'))
+        return jsonify({
+            'success': False,
+            'error': 'Error adding Brand: ' + str(e)
+        }), 400
+    
+    # return redirect(url_for('new_entry'))
 
 @app.route('/add_bottle', methods=['POST'])
 def add_bottle():
@@ -443,14 +464,21 @@ def add_bottle():
     try:
         db.session.add(new_bottle)
         db.session.commit()
-        flash('Bottle added successfully!', 'success')
         app.logger.info(f"Bottle added successfully: {expression}")
+        return jsonify({
+            'success': True,
+            'bottle_id': new_bottle.bottle_id,
+            'expression': new_bottle.expression
+        }), 201
     except Exception as e:
         db.session.rollback()
-        flash('Error adding Bottle: ' + str(e), 'error')
         app.logger.error(f"Error adding Bottle: {e}", exc_info=True)
-
-    return redirect(url_for('new_entry'))
+        return jsonify({
+            'success': False,
+            'error': 'Error adding Bottle: ' + str(e)
+        }), 400
+    
+    # return redirect(url_for('new_entry'))
 
 # Error Handlers
 

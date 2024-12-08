@@ -13,7 +13,7 @@ app = Flask(
 
 # Bifurcate my project components
 app.jinja_loader = ChoiceLoader([
-    FileSystemLoader(os.path.join(app.root_path, 'assignment', 'templates')), # ./assignment/templates
+    FileSystemLoader(os.path.join(app.root_path, 'assignment', 'templates')),  # ./assignment/templates
     FileSystemLoader(os.path.join(app.root_path, 'templates'))  # ./templates
 ])
 
@@ -79,7 +79,7 @@ class Brand(db.Model):
 class Bottle(db.Model):
     __tablename__ = 'bottles'
     bottle_id = db.Column(db.Integer, primary_key=True)
-    brand_id = db.Column(db.Integer, db.ForeignKey('brands.brand_id'), nullable=False)
+    brand_id = db.Column(db.Integer, db.ForeignKey('brands.brand_id'), nullable=False)  # Corrected ForeignKey
     expression = db.Column(db.String(100))
     volume_ml = db.Column(db.Integer)
     proof = db.Column(db.Float)
@@ -111,9 +111,7 @@ class Bottle(db.Model):
     def __repr__(self):
         return f"<Bottle {self.expression}>"
 
-# Uncomment the following two lines to create the db tables:
-# with app.app_context():
-#    db.create_all()
+# Routes Definitions
 
 @app.route('/assignment', methods=['POST', 'GET'])  # This allows us to send data to our database
 def index():

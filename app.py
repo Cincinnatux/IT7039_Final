@@ -10,7 +10,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 from sqlalchemy import Enum as SqlEnum
 from wtforms import StringField, IntegerField, FloatField, DateField
-from wtform.validators import DataRequired, Optional
+from wtforms.validators import DataRequired, Optional
 import os
 import random
 

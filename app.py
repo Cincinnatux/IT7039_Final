@@ -688,7 +688,7 @@ def analyze_inventory():
 
 # Route to render random_flight.html
 @app.route('/api/random_flight', methods=['GET'])
-def get_random_flight():
+def random_flight():
     try:
         # Query bottles where date_emptied is NULL
         available_bottles = Bottle.query.filter(Bottle.date_emptied == None).all()

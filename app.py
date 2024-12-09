@@ -693,7 +693,7 @@ def random_flight():
 
 # Route to randomize bottles
 @app.route('/api/random_flight', methods=['GET'])
-def random_flight():
+def get_random_flight():
     try:
         # Query bottles where date_emptied is NULL
         available_bottles = Bottle.query.filter(Bottle.date_emptied == None).all()

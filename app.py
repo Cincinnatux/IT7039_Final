@@ -145,7 +145,7 @@ class Brand(db.Model):
         return {
             'brand_id' : self.brand_id,
             'brand_name' : self.brand_name,
-            'category' : self.category.value,
+            'category' : self.category,
             'distillery_id' : self.distillery_id
         }
 
@@ -159,7 +159,7 @@ class Brand(db.Model):
 #    AMERICAN_WHISKEY = "American Whiskey"
 #    FINISHED_BOURBON = "Finished Bourbon"
 #    FINISHED_RYE = "Finished Rye"
-# LIGHT_WHISKEY = "Light Whiskey"
+#    LIGHT_WHISKEY = "Light Whiskey"
 #    CORN_WHISKEY = "Corn Whiskey"
 #    FLAVORED_WHISKEY = "Flavored Whiskey"
 #    SCOTCH_BLEND = "Scotch Blend"

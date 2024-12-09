@@ -33,7 +33,7 @@
                     .then(data => {
                         if (data.success) {
                             const bottles = data.bottles;
-                            let html = '<ul>';
+                            let html = '<ul style="list-style-type:none;">';
                             bottles.forEach(bottle => {
                                 html += `<li>${bottle.expression} - ${bottle.brand_name}</li>`;
                             });

@@ -687,6 +687,11 @@ def analyze_inventory():
         return render_template('500.html'), 500
 
 # Route to render random_flight.html
+@app.route('/random_flight', methods=['GET'])
+def random_flight():
+    return render_template('random_flight.html')
+
+# Route to randomize bottles
 @app.route('/api/random_flight', methods=['GET'])
 def random_flight():
     try:

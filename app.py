@@ -1,5 +1,5 @@
 from datetime import datetime
-from enum import Enum
+# from enum import Enum
 from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
 from flask_cors import CORS  # Optional, if needed for cross-origin requests
 from flask_migrate import Migrate
@@ -133,7 +133,7 @@ class Brand(db.Model):
     __tablename__ = 'brands'
     brand_id = db.Column(db.Integer, primary_key=True)
     brand_name = db.Column(db.String(50), nullable=False)
-    category = db.Column(SqlEnum(BrandCategory), nullable=False)
+    category = db.Column(db.String(30), nullable=False)
     distillery_id = db.Column(db.String(15), db.ForeignKey('distilleries.dsp'), nullable=False)
 
     bottles = db.relationship('Bottle', backref='brand', lazy=True)
@@ -149,26 +149,23 @@ class Brand(db.Model):
             'distillery_id' : self.distillery_id
         }
 
-class BrandCategory(Enum):
-    BOURBON = "Bourbon"
-    RYE = "Rye"
-    AMERICAN_SINGLE_MALT = "American Single Malt"
-    SCOTCH_SINGLE_MALT = "Scotch Single Malt"
-    JAPANESE_SINGLE_MALT = "Japanese Single Malt"
-    INDIAN_SINGLE_MALT = "Indian Single Malt"
-    AMERICAN_WHISKEY = "American Whiskey"
-    FINISHED_BOURBON = "Finished Bourbon"
-    FINISHED_RYE = "Finished Rye"
-    TENNESSEE_WHISKEY = "Tennessee Whiskey"
-    CANADIAN_WHISKEY = "Canadian Whiskey"
-    CANADIAN_RYE = "Canadian Rye"
-    LIGHT_WHISKEY = "Light Whiskey"
-    CORN_WHISKEY = "Corn Whiskey"
-    FLAVORED_WHISKEY = "Flavored Whiskey"
-    SCOTCH_BLEND = "Scotch Blend"
-    IRISH_WHISKEY = "Irish Whiskey"
-    JAPANESE_BLEND = "Japanese Blend"
-    INDIAN_BLEND = "Indian Blend"
+# class BrandCategory(Enum):
+#    BOURBON = "Bourbon"
+#    RYE = "Rye"
+#    AMERICAN_SINGLE_MALT = "American Single Malt"
+#    SCOTCH_SINGLE_MALT = "Scotch Single Malt"
+#    JAPANESE_SINGLE_MALT = "Japanese Single Malt"
+#    INDIAN_SINGLE_MALT = "Indian Single Malt"
+#    AMERICAN_WHISKEY = "American Whiskey"
+#    FINISHED_BOURBON = "Finished Bourbon"
+#    FINISHED_RYE = "Finished Rye"
+# LIGHT_WHISKEY = "Light Whiskey"
+#    CORN_WHISKEY = "Corn Whiskey"
+#    FLAVORED_WHISKEY = "Flavored Whiskey"
+#    SCOTCH_BLEND = "Scotch Blend"
+#    IRISH_WHISKEY = "Irish Whiskey"
+#    JAPANESE_BLEND = "Japanese Blend"
+#    INDIAN_BLEND = "Indian Blend"
 
 class Bottle(db.Model):
     __tablename__ = 'bottles'

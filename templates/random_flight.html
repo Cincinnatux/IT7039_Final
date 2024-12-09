@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<!--Enter your <head> code here-->
-<title>Random Flight</title>
+<!--Enter <head> code here-->
+<title>Whiskey Flight Randomizer</title>
+<!-- Include Bootstrap CSS for styling (optional) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 {% endblock %} 
 
 {% block body %}
-<!--Enter your <body> code here-->
+<!--Enter <body> code here-->
 <div id="grid">
     <header class="box header">
         <h1>Get Assigned a Random Flight!</h1>
@@ -17,7 +19,87 @@
         <a href="{{ url_for('random_flight' )}}">Get a Random Flight</a>
         <a href="{{ url_for('analyze_inventory' )}}">Analyze Current Bottles</a>
     </nav>
-    <main class="box main"></main>
+    <main class="box main">
+        <div class="container my-5">
+            <h1 class="mb-4">Random Flight Selection</h1>
+            
+            <div class="mb-4">
+                <button id="selectFlightBtn" class="btn btn-primary">Get Random Flight</button>
+            </div>
+            
+            <div id="flightResults" class="row">
+                <!-- Randomly selected bottles will be displayed here -->
+            </div>
+        </div>
+        
+        <!-- Include Bootstrap JS and dependencies (optional) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Include Fetch API Polyfill for older browsers (optional) -->
+        <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.6.2/dist/fetch.umd.min.js"></script>
+        
+        <script>
+            document.getElementById('selectFlightBtn').addEventListener('click', function() {
+                // Disable the button to prevent multiple clicks
+                const button = this;
+                button.disabled = true;
+                button.innerText = 'Selecting...';
+        
+                // Fetch 4 random bottles via the API
+                fetch('/api/random_flight')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Re-enable the button
+                        button.disabled = false;
+                        button.innerText = 'Get Random Flight';
+                        
+                        const resultsDiv = document.getElementById('flightResults');
+                        resultsDiv.innerHTML = '';  // Clear previous results
+        
+                        if (data.success) {
+                            const bottles = data.bottles;
+                            
+                            if (bottles.length === 0) {
+                                resultsDiv.innerHTML = '<p class="text-warning">No bottles available for selection.</p>';
+                                return;
+                            }
+        
+                            // Create Bootstrap cards for each bottle
+                            bottles.forEach(bottle => {
+                                const cardDiv = document.createElement('div');
+                                cardDiv.className = 'col-md-3 mb-4';
+                                
+                                cardDiv.innerHTML = `
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${bottle.expression}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">${bottle.brand_name} (${bottle.category})</h6>
+                                            <p class="card-text">
+                                                <strong>Volume:</strong> ${bottle.volume_ml} ml<br>
+                                                <strong>Proof:</strong> ${bottle.proof ? bottle.proof : 'N/A'}<br>
+                                                <!-- Add more bottle details as needed -->
+                                            </p>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                resultsDiv.appendChild(cardDiv);
+                            });
+                        } else {
+                            resultsDiv.innerHTML = `<p class="text-danger">${data.message}</p>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching random flight:', error);
+                        const button = document.getElementById('selectFlightBtn');
+                        button.disabled = false;
+                        button.innerText = 'Get Random Flight';
+                        
+                        const resultsDiv = document.getElementById('flightResults');
+                        resultsDiv.innerHTML = '<p class="text-danger">An error occurred while selecting bottles. Please try again.</p>';
+                    });
+            });
+        </script>
+    </main>
     <nav class="box desktop-nav">
         <a href="{{ url_for('home') }}">Home Page&nbsp;&nbsp;&nbsp;&nbsp;</a>
         <a href="{{ url_for('final' )}}">Enter New Bottle&nbsp;&nbsp;&nbsp;&nbsp;</a>

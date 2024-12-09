@@ -1,12 +1,16 @@
+from datetime import datetime
 from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
+from flask_cors import CORS  # Optional, if needed for cross-origin requests
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from flask_wtf import FlaskForm
 from jinja2 import ChoiceLoader, FileSystemLoader
-import os
 import logging
 from logging.handlers import RotatingFileHandler
-from flask_cors import CORS  # Optional, if needed for cross-origin requests
+from wtforms import StringField, IntegerField, FloatField, DateField
+from wtform.validators import DataRequired, Optional
+import os
+import random
 
 app = Flask(
     __name__,
@@ -183,6 +187,8 @@ class Bottle(db.Model):
             'bottle_id' : self.bottle_id,
             'brand_id' : self.brand_id,
             'expression' : self.expression,
+            'brand_name' : self.brand.brand_name,
+            'category' : self.brand.category,
             'volume_ml' : self.volume_ml,
             'proof' : self.proof,
             'stated_age' : self.stated_age,
@@ -284,9 +290,6 @@ def new_entry():
     brands = Brand.query.all()
     return render_template('new_entry.html', parent_companies=parent_companies, distilleries=distilleries, brands=brands)
 
-@app.route('/random_flight')
-def random_flight():
-    return render_template('random_flight.html')
 
 @app.route('/')
 def home():
@@ -663,6 +666,26 @@ def analyze_inventory():
         app.logger.error(f"Error rendering analyze_inventory: {e}", exc_info=True)
         return render_template('500.html'), 500
 
+# Route to render random_flight.html
+@app.route('/api/random_flight', methods=['GET'])
+def get_random_flight():
+    try:
+        # Query bottles where date_emptied is NULL
+        available_bottles = Bottle.query.filter(Bottle.date_emptied == None).all()
+        total_available = len(available_bottles)
+        
+        if total_available == 0:
+            return jsonify({'success': False, 'message': 'No bottles available without a date_emptied.'}), 200
+        
+        # Randomly select 4 bottles
+        selected_bottles = random.sample(available_bottles, min(4, total_available))
+        bottles_data = [bottle.to_dict() for bottle in selected_bottles]
+        
+        return jsonify({'success': True, 'bottles': bottles_data}), 200
+    except Exception as e:
+        app.logger.error(f"Error fetching random flight: {e}", exc_info=True)
+        return jsonify({'success': False, 'message': 'An error occurred while fetching bottles.'}), 500
+
 # Error Handlers
 
 @app.errorhandler(500)
@@ -677,5 +700,5 @@ def not_found_error(error):
     return render_template('404.html'), 404
 
 # Run the app
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)

@@ -1,10 +1,11 @@
 from datetime import datetime
 # from enum import Enum
 from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
-from flask_cors import CORS  # Optional, if needed for cross-origin requests
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, CSRFProtect
+from flask_wtf.csrf import CSRFError
 from jinja2 import ChoiceLoader, FileSystemLoader
 import logging
 from logging.handlers import RotatingFileHandler
@@ -17,7 +18,8 @@ import random
 app = Flask(
     __name__,
     template_folder='assignment/templates',
-    static_folder='assignment/static'
+    static_folder='assignment/static',
+    csrf = CSRFProtect(app)
 )
 
 # Load environment variables (if using python-dotenv)
@@ -261,24 +263,33 @@ def index():
 
 @app.route('/assignment/delete/<int:id>', methods=['POST'])
 def delete(id):
-    task_to_delete = Todo.query.get_or_404(id)
+    table = request.form.get('table')
+    if not table:
+        return jsonify({'success': False, 'error': 'No table specified.'}), 400
 
     try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        flash('Task deleted successfully!', 'success')
-        if request.is_json:
-            return jsonify({'success': True}), 200
+        if table == 'parent_company':
+            record = ParentCompany.query.get(id)
+        elif table == 'distillery':
+            record = Distillery.query.get(id)
+        elif table == 'brand':
+            record = Brand.query.get(id)
+        elif table == 'bottle':
+            record = Bottle.query.get(id)
         else:
-            return redirect('/assignment')
+            return jsonify({'success': False, 'error': 'Invalid table name.'}), 400
+
+        if not record:
+            return jsonify({'success': False, 'error': 'Record not found.'}), 404
+
+        db.session.delete(record)
+        db.session.commit()
+        return jsonify({'success': True}), 200
+
     except Exception as e:
         db.session.rollback()
-        flash('There was a problem deleting that task.', 'error')
-        app.logger.error(f"Error deleting task: {e}", exc_info=True)
-        if request.is_json:
-            return jsonify({'success': False, 'error': 'Error deleting task.'}), 400
-        else:
-            return redirect('/assignment')
+        app.logger.error(f"Error deleting record from {table}: {e}", exc_info=True)
+        return jsonify({'success': False, 'error': 'An error occurred while deleting the record.'}), 500
     
 @app.route('/assignment/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
@@ -713,16 +724,20 @@ def get_random_flight():
 
 # Error Handlers
 
-@app.errorhandler(500)
-def internal_error(error):
-    db.session.rollback()
-    app.logger.error(f"Internal Server Error: {error}", exc_info=True)
-    return render_template('500.html'), 500
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return jsonify({'success': False, 'error': 'CSRF token missing or incorrect.'}), 400
 
 @app.errorhandler(404)
 def not_found_error(error):
     app.logger.warning(f"Page Not Found: {request.url}")
     return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    app.logger.error(f"Internal Server Error: {error}", exc_info=True)
+    return render_template('500.html'), 500
 
 # Run the app
 if __name__ == '__main__':

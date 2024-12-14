@@ -15,11 +15,11 @@ from wtforms.validators import DataRequired, Optional
 import os
 import random
 
+# Instantiate Flask app
 app = Flask(
     __name__,
     template_folder='assignment/templates',
     static_folder='assignment/static',
-    csrf = CSRFProtect(app)
 )
 
 # Load environment variables (if using python-dotenv)
@@ -28,6 +28,9 @@ app = Flask(
 
 # Configure secret key for flashing messages
 app.config['SECRET_KEY'] = 'your_secure_secret_key_here'  # Replace with a secure key in production
+
+# Initialize CSRFProtect
+csrf = CSRFProtect(app)
 
 # Configure the absolute path for the SQLite database
 basedir = os.path.abspath(os.path.dirname(__file__))

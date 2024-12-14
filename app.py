@@ -742,6 +742,69 @@ def internal_error(error):
     app.logger.error(f"Internal Server Error: {error}", exc_info=True)
     return render_template('500.html'), 500
 
+@app.route('/edit_record', methods=['POST'])
+def edit_record():
+    """
+    Endpoint to handle editing of records.
+    Expects form data containing:
+    - table: The table name ('parent_company', 'distillery', 'brand', 'bottle')
+    - id: The primary key of the record to edit
+    - Other fields corresponding to the record's attributes
+    """
+    table = request.form.get('table')
+    record_id = request.form.get('id')
+
+    if not table or not record_id:
+        return jsonify({'error': 'Table and ID are required.'}), 400
+
+    try:
+        if table == 'parent_company':
+            record = ParentCompany.query.get(record_id)
+            if not record:
+                return jsonify({'error': 'Parent Company not found.'}), 404
+            # Update fields
+            record.parent_company_name = request.form.get('parent_company_name', record.parent_company_name)
+            record.website = request.form.get('website', record.website)
+            # Add other fields as necessary
+
+        elif table == 'distillery':
+            record = Distillery.query.get(record_id)
+            if not record:
+                return jsonify({'error': 'Distillery not found.'}), 404
+            # Update fields
+            record.distillery_name = request.form.get('distillery_name', record.distillery_name)
+            record.website = request.form.get('website', record.website)
+            # Add other fields as necessary
+
+        elif table == 'brand':
+            record = Brand.query.get(record_id)
+            if not record:
+                return jsonify({'error': 'Brand not found.'}), 404
+            # Update fields
+            record.brand_name = request.form.get('brand_name', record.brand_name)
+            record.category = request.form.get('category', record.category)
+            # Add other fields as necessary
+
+        elif table == 'bottle':
+            record = Bottle.query.get(record_id)
+            if not record:
+                return jsonify({'error': 'Bottle not found.'}), 404
+            # Update fields
+            record.expression = request.form.get('expression', record.expression)
+            record.volume_ml = request.form.get('volume_ml', record.volume_ml)
+            # Add other fields as necessary
+
+        else:
+            return jsonify({'error': 'Invalid table name.'}), 400
+
+        db.session.commit()
+        return jsonify({'success': f'{table.capitalize()} updated successfully.'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f'Error updating record: {e}')
+        return jsonify({'error': 'An error occurred while updating the record.'}), 500
+
 # Run the app
 if __name__ == '__main__':
     app.run(debug=True)

@@ -457,4 +457,413 @@ def add_distillery():
         return jsonify({'success': False, 'error': 'DSP, Distillery Name, and Parent Company are required.'}), 400
 
     # Check if the Distillery already exists
-    existing_distillery = Distillery.query.filter_by(dsp=dsp).fi
+    existing_distillery = Distillery.query.filter_by(dsp=dsp).first()
+    if existing_distillery:
+        flash('Distillery with this DSP already exists.', 'error')
+        app.logger.warning(f"Attempted to add duplicate Distillery with DSP: {dsp}")
+        return jsonify({'success': False, 'error': 'That Distillery already exists.'}), 400
+
+    new_distillery = Distillery(
+        dsp=dsp,
+        distillery_name=distillery_name,
+        parent_company_id=parent_company_id,
+        website=website,
+        address_1=address_1,
+        address_2=address_2,
+        city=city,
+        state=state,
+        postal_code=postal_code,
+        country=country
+    )
+
+    try:
+        db.session.add(new_distillery)
+        db.session.commit()
+        app.logger.info(f"Distillery added successfully: {distillery_name}")
+        return jsonify({
+            'success': True,
+            'dsp': new_distillery.dsp,
+            'distillery_name': new_distillery.distillery_name
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error adding Distillery: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Error adding Distillery: ' + str(e)
+        }), 500
+
+@app.route('/add_brand', methods=['POST'])
+def add_brand():
+    brand_name = request.form.get('brand_name', '').strip()
+    category = request.form.get('category', '').strip()
+    distillery_id = request.form.get('distillery_id', '').strip()
+
+    if not brand_name or not distillery_id:
+        flash('Brand Name and Distillery are required.', 'error')
+        app.logger.warning("Brand Name or Distillery ID is missing.")
+        return jsonify({'success': False, 'error': 'Brand Name and Distillery are required.'}), 400
+
+    # Check if the Brand already exists
+    existing_brand = Brand.query.filter_by(brand_name=brand_name, distillery_id=distillery_id).first()
+    if existing_brand:
+        flash('Brand with this name already exists for the selected Distillery.', 'error')
+        app.logger.warning(f"Attempted to add duplicate Brand: {brand_name} for Distillery ID: {distillery_id}")
+        return jsonify({'success': False, 'error': 'That Brand already exists.'}), 400
+
+    new_brand = Brand(
+        brand_name=brand_name,
+        category=category,
+        distillery_id=distillery_id
+    )
+
+    try:
+        db.session.add(new_brand)
+        db.session.commit()
+        app.logger.info(f"Brand added successfully: {brand_name}")
+        return jsonify({
+            'success': True,
+            'brand_id': new_brand.brand_id,
+            'brand_name': new_brand.brand_name
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error adding Brand: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Error adding Brand: ' + str(e)
+        }), 500
+
+@app.route('/add_bottle', methods=['POST'])
+def add_bottle():
+    try:
+        brand_id = request.form.get('brand_id')
+        expression = request.form.get('expression', '').strip()
+        volume_ml = request.form.get('volume_ml')
+        proof = request.form.get('proof')
+        stated_age = request.form.get('stated_age')
+        estimated_age = request.form.get('estimated_age')
+        primary_grain = request.form.get('primary_grain', '').strip()
+        primary_grain_percentage = request.form.get('primary_grain_percentage')
+        secondary_grain = request.form.get('secondary_grain', '').strip()
+        secondary_grain_percentage = request.form.get('secondary_grain_percentage')
+        tertiary_grain = request.form.get('tertiary_grain', '').strip()
+        tertiary_grain_percentage = request.form.get('tertiary_grain_percentage')
+        quaternary_grain = request.form.get('quaternary_grain', '').strip()
+        quaternary_grain_percentage = request.form.get('quaternary_grain_percentage')
+        source = request.form.get('source', '').strip()
+        price_paid = request.form.get('price_paid')
+        srp = request.form.get('srp')
+        date_purchased = request.form.get('date_purchased')
+        date_distilled = request.form.get('date_distilled')
+        date_bottled = request.form.get('date_bottled')
+        date_opened = request.form.get('date_opened')
+        date_emptied = request.form.get('date_emptied')
+        single_barrel = request.form.get('single_barrel') == 'on'
+        chill_filtered = request.form.get('chill_filtered') == 'on'
+        bottled_in_bond = request.form.get('bottled_in_bond') == 'on'
+        peated = request.form.get('peated') == 'on'
+        finished = request.form.get('finished') == 'on'
+        notes = request.form.get('notes', '').strip()
+        
+        # Helper function to parse dates
+        def parse_date(date_str):
+            if date_str:
+                try:
+                    return datetime.strptime(date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    return None
+            return None
+        
+        # Convert date strings to date objects
+        date_purchased = parse_date(date_purchased)
+        date_distilled = parse_date(date_distilled)
+        date_bottled = parse_date(date_bottled)
+        date_opened = parse_date(date_opened)
+        date_emptied = parse_date(date_emptied)
+        
+        # Create a new Bottle instance
+        new_bottle = Bottle(
+            brand_id=brand_id,
+            expression=expression,
+            volume_ml=int(volume_ml) if volume_ml else None,
+            proof=float(proof) if proof else None,
+            stated_age=float(stated_age) if stated_age else None,
+            estimated_age=float(estimated_age) if estimated_age else None,
+            primary_grain=primary_grain,
+            primary_grain_percentage=float(primary_grain_percentage) if primary_grain_percentage else None,
+            secondary_grain=secondary_grain,
+            secondary_grain_percentage=float(secondary_grain_percentage) if secondary_grain_percentage else None,
+            tertiary_grain=tertiary_grain,
+            tertiary_grain_percentage=float(tertiary_grain_percentage) if tertiary_grain_percentage else None,
+            quaternary_grain=quaternary_grain,
+            quaternary_grain_percentage=float(quaternary_grain_percentage) if quaternary_grain_percentage else None,
+            source=source,
+            price_paid=float(price_paid) if price_paid else None,
+            srp=float(srp) if srp else None,
+            date_purchased=date_purchased,
+            date_distilled=date_distilled,
+            date_bottled=date_bottled,
+            date_opened=date_opened,
+            date_emptied=date_emptied,
+            single_barrel=single_barrel,
+            chill_filtered=chill_filtered,
+            bottled_in_bond=bottled_in_bond,
+            peated=peated,
+            finished=finished,
+            notes=notes
+        )
+        
+        db.session.add(new_bottle)
+        db.session.commit()
+        
+        flash('Bottle added successfully!', 'success')
+        app.logger.info(f"Bottle added successfully: {expression}")
+        return jsonify({'success': True, 'bottle_id': new_bottle.bottle_id, 'expression': new_bottle.expression}), 201
+    except Exception as e:
+        db.session.rollback()
+        flash('Error adding Bottle: ' + str(e), 'error')
+        app.logger.error(f"Error adding Bottle: {e}", exc_info=True)
+        return jsonify({'success': False, 'error': 'Error adding Bottle.'}), 500
+
+@app.route('/analyze_inventory', methods=['GET'])
+def analyze_inventory():
+    try:
+        # Query all bottles
+        all_bottles = Bottle.query.all()
+        total_bottles = len(all_bottles)
+        
+        # Query bottles without date_emptied
+        bottles_not_emptied = Bottle.query.filter(Bottle.date_emptied == None).all()
+        total_not_emptied = len(bottles_not_emptied)
+        
+        # Example: Categorize bottles by brand for the first pie chart
+        brand_counts = db.session.query(Brand.brand_name, db.func.count(Bottle.bottle_id))\
+            .join(Bottle, Brand.brand_id == Bottle.brand_id)\
+            .group_by(Brand.brand_name).all()
+        
+        # Example: Categorize bottles not emptied by brand for the second pie chart
+        brand_not_emptied_counts = db.session.query(Brand.brand_name, db.func.count(Bottle.bottle_id))\
+            .join(Bottle, Brand.brand_id == Bottle.brand_id)\
+            .filter(Bottle.date_emptied == None)\
+            .group_by(Brand.brand_name).all()
+        
+        # Prepare data for Chart.js
+        chart1_labels = [brand for brand, count in brand_counts]
+        chart1_values = [count for brand, count in brand_counts]
+        
+        chart2_labels = [brand for brand, count in brand_not_emptied_counts]
+        chart2_values = [count for brand, count in brand_not_emptied_counts]
+        
+        return render_template('analyze_inventory.html',
+                               total_bottles=total_bottles,
+                               total_not_emptied=total_not_emptied,
+                               chart1_labels=chart1_labels,
+                               chart1_values=chart1_values,
+                               chart2_labels=chart2_labels,
+                               chart2_values=chart2_values)
+    except Exception as e:
+        app.logger.error(f"Error rendering analyze_inventory: {e}", exc_info=True)
+        return render_template('500.html'), 500
+
+# Route to render random_flight.html
+@app.route('/random_flight', methods=['GET'])
+def random_flight():
+    return render_template('random_flight.html')
+
+# Route to randomize bottles
+@app.route('/api/random_flight', methods=['GET'])
+def get_random_flight():
+    try:
+        # Query bottles where date_emptied is NULL
+        available_bottles = Bottle.query.filter(Bottle.date_emptied == None).all()
+        total_available = len(available_bottles)
+        
+        if total_available == 0:
+            return jsonify({'success': False, 'message': 'No bottles available without a date_emptied.'}), 200
+        
+        # Randomly select 4 bottles
+        selected_bottles = random.sample(available_bottles, min(4, total_available))
+        bottles_data = [bottle.to_dict() for bottle in selected_bottles]
+        
+        return jsonify({'success': True, 'bottles': bottles_data}), 200
+    except Exception as e:
+        app.logger.error(f"Error fetching random flight: {e}", exc_info=True)
+        return jsonify({'success': False, 'message': 'An error occurred while fetching bottles.'}), 500
+
+# Error Handlers
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return jsonify({'success': False, 'error': 'CSRF token missing or incorrect.'}), 400
+
+@app.errorhandler(404)
+def not_found_error(error):
+    app.logger.warning(f"Page Not Found: {request.url}")
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    app.logger.error(f"Internal Server Error: {error}", exc_info=True)
+    return render_template('500.html'), 500
+
+@app.route('/edit_record', methods=['POST'])
+def edit_record():
+    """
+    Endpoint to handle editing of records.
+    Expects form data containing:
+    - table: The table name ('parent_company', 'distillery', 'brand', 'bottle')
+    - id: The primary key of the record to edit
+    - Other fields corresponding to the record's attributes
+    """
+    table = request.form.get('table')
+    record_id = request.form.get('id')
+
+    if not table or not record_id:
+        return jsonify({'error': 'Table and ID are required.'}), 400
+
+    try:
+        if table == 'parent_company':
+            record = ParentCompany.query.get(record_id)
+            if not record:
+                return jsonify({'error': 'Parent Company not found.'}), 404
+            # Update fields
+            record.parent_company_name = request.form.get('parent_company_name', record.parent_company_name)
+            record.website = request.form.get('website', record.website)
+            record.address_1 = request.form.get('address_1', record.address_1)
+            record.address_2 = request.form.get('address_2', record.address_2)
+            record.city = request.form.get('city', record.city)
+            record.state = request.form.get('state', record.state)
+            record.postal_code = request.form.get('postal_code', record.postal_code)
+            record.country = request.form.get('country', record.country)
+
+        elif table == 'distillery':
+            record = Distillery.query.get(record_id)
+            if not record:
+                return jsonify({'error': 'Distillery not found.'}), 404
+            # Update fields
+            record.distillery_name = request.form.get('distillery_name', record.distillery_name)
+            record.website = request.form.get('website', record.website)
+            record.address_1 = request.form.get('address_1', record.address_1)
+            record.address_2 = request.form.get('address_2', record.address_2)
+            record.city = request.form.get('city', record.city)
+            record.state = request.form.get('state', record.state)
+            record.postal_code = request.form.get('postal_code', record.postal_code)
+            record.country = request.form.get('country', record.country)
+
+        elif table == 'brand':
+            record = Brand.query.get(record_id)
+            if not record:
+                return jsonify({'error': 'Brand not found.'}), 404
+            # Update fields
+            record.brand_name = request.form.get('brand_name', record.brand_name)
+            record.category = request.form.get('category', record.category)
+            record.distillery_id = request.form.get('distillery_id', record.distillery_id)
+
+        elif table == 'bottle':
+            record = Bottle.query.get(record_id)
+            if not record:
+                return jsonify({'error': 'Bottle not found.'}), 404
+            # Update fields
+            record.brand_id = request.form.get('brand_id', record.brand_id)
+            record.expression = request.form.get('expression', record.expression)
+            record.volume_ml = int(request.form.get('volume_ml')) if request.form.get('volume_ml') else record.volume_ml
+            record.proof = float(request.form.get('proof')) if request.form.get('proof') else record.proof
+            record.stated_age = float(request.form.get('stated_age')) if request.form.get('stated_age') else record.stated_age
+            record.estimated_age = float(request.form.get('estimated_age')) if request.form.get('estimated_age') else record.estimated_age
+            record.primary_grain = request.form.get('primary_grain', record.primary_grain)
+            record.primary_grain_percentage = float(request.form.get('primary_grain_percentage')) if request.form.get('primary_grain_percentage') else record.primary_grain_percentage
+            record.secondary_grain = request.form.get('secondary_grain', record.secondary_grain)
+            record.secondary_grain_percentage = float(request.form.get('secondary_grain_percentage')) if request.form.get('secondary_grain_percentage') else record.secondary_grain_percentage
+            record.tertiary_grain = request.form.get('tertiary_grain', record.tertiary_grain)
+            record.tertiary_grain_percentage = float(request.form.get('tertiary_grain_percentage')) if request.form.get('tertiary_grain_percentage') else record.tertiary_grain_percentage
+            record.quaternary_grain = request.form.get('quaternary_grain', record.quaternary_grain)
+            record.quaternary_grain_percentage = float(request.form.get('quaternary_grain_percentage')) if request.form.get('quaternary_grain_percentage') else record.quaternary_grain_percentage
+            record.source = request.form.get('source', record.source)
+            record.price_paid = float(request.form.get('price_paid')) if request.form.get('price_paid') else record.price_paid
+            record.srp = float(request.form.get('srp')) if request.form.get('srp') else record.srp
+            # Parse dates
+            date_purchased = request.form.get('date_purchased')
+            date_distilled = request.form.get('date_distilled')
+            date_bottled = request.form.get('date_bottled')
+            date_opened = request.form.get('date_opened')
+            date_emptied = request.form.get('date_emptied')
+
+            def parse_date(date_str):
+                if date_str:
+                    try:
+                        return datetime.strptime(date_str, '%Y-%m-%d').date()
+                    except ValueError:
+                        return record.date_purchased  # Keep existing if invalid
+                return record.date_purchased  # Keep existing if not provided
+
+            record.date_purchased = parse_date(date_purchased)
+            record.date_distilled = parse_date(date_distilled)
+            record.date_bottled = parse_date(date_bottled)
+            record.date_opened = parse_date(date_opened)
+            record.date_emptied = parse_date(date_emptied)
+            record.single_barrel = request.form.get('single_barrel') == 'on'
+            record.chill_filtered = request.form.get('chill_filtered') == 'on'
+            record.bottled_in_bond = request.form.get('bottled_in_bond') == 'on'
+            record.peated = request.form.get('peated') == 'on'
+            record.finished = request.form.get('finished') == 'on'
+            record.notes = request.form.get('notes', record.notes)
+
+        else:
+            return jsonify({'error': 'Invalid table name.'}), 400
+
+        db.session.commit()
+        return jsonify({'success': f'{table.capitalize()} updated successfully.'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f'Error updating record: {e}', exc_info=True)
+        return jsonify({'error': 'An error occurred while updating the record.'}), 500
+
+# Added Route for Fetching Record Data
+@app.route('/get_record', methods=['GET'])
+def get_record():
+    table = request.args.get('table')
+    record_id = request.args.get('id')
+
+    if not table or not record_id:
+        return jsonify({'success': False, 'error': 'Table and ID are required.'}), 400
+
+    try:
+        if table == 'parent_company':
+            record = ParentCompany.query.get(record_id)
+            if not record:
+                return jsonify({'success': False, 'error': 'Parent Company not found.'}), 404
+            data = record.to_dict()
+
+        elif table == 'distillery':
+            record = Distillery.query.get(record_id)
+            if not record:
+                return jsonify({'success': False, 'error': 'Distillery not found.'}), 404
+            data = record.to_dict()
+
+        elif table == 'brand':
+            record = Brand.query.get(record_id)
+            if not record:
+                return jsonify({'success': False, 'error': 'Brand not found.'}), 404
+            data = record.to_dict()
+
+        elif table == 'bottle':
+            record = Bottle.query.get(record_id)
+            if not record:
+                return jsonify({'success': False, 'error': 'Bottle not found.'}), 404
+            data = record.to_dict()
+
+        else:
+            return jsonify({'success': False, 'error': 'Invalid table name.'}), 400
+
+        return jsonify({'success': True, 'record': data}), 200
+
+    except Exception as e:
+        app.logger.error(f'Error fetching record: {e}', exc_info=True)
+        return jsonify({'success': False, 'error': 'An error occurred while fetching the record.'}), 500
+
+# Run the app
+if __name__ == '__main__':
+    app.run(debug=True)

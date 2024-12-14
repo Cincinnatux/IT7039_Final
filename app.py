@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+from flask_wtf.csrf import CSRFError
 from jinja2 import ChoiceLoader, FileSystemLoader
 import logging
 from logging.handlers import RotatingFileHandler

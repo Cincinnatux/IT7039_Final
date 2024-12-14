@@ -47,7 +47,7 @@
                 <h3>Add Parent Company</h3>
             </div>
             <div class="card-body">
-                <form id="add_parent_company_form">
+                <form id="add_parent_company_form" method="POST" action="{{ url_for('add_parent_company') }}">
                     <!-- CSRF Token -->
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     
@@ -55,7 +55,34 @@
                         <label for="parent_company_name" class="form-label">Parent Company Name:</label>
                         <input type="text" class="form-control" id="parent_company_name" name="parent_company_name" required>
                     </div>
-                    <!-- ... rest of the form fields ... -->
+                    <div class="mb-3">
+                        <label for="website" class="form-label">Website:</label>
+                        <input type="url" class="form-control" id="website" name="website">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address_1" class="form-label">Address 1:</label>
+                        <input type="text" class="form-control" id="address_1" name="address_1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address_2" class="form-label">Address 2:</label>
+                        <input type="text" class="form-control" id="address_2" name="address_2">
+                    </div>
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City:</label>
+                        <input type="text" class="form-control" id="city" name="city">
+                    </div>
+                    <div class="mb-3">
+                        <label for="state" class="form-label">State:</label>
+                        <input type="text" class="form-control" id="state" name="state">
+                    </div>
+                    <div class="mb-3">
+                        <label for="postal_code" class="form-label">Postal Code:</label>
+                        <input type="text" class="form-control" id="postal_code" name="postal_code">
+                    </div>
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country:</label>
+                        <input type="text" class="form-control" id="country" name="country">
+                    </div>
                     <button type="submit" class="btn btn-success">Add Parent Company</button>
                     <button type="button" class="btn btn-secondary" onclick="hideForm('parent_company')">Cancel</button>
                 </form>
@@ -68,7 +95,7 @@
                 <h3>Add Distillery</h3>
             </div>
             <div class="card-body">
-                <form id="add_distillery_form">
+                <form id="add_distillery_form" method="POST" action="{{ url_for('add_distillery') }}">
                     <!-- CSRF Token -->
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     
@@ -76,7 +103,50 @@
                         <label for="dsp" class="form-label">DSP (Distillery Code):</label>
                         <input type="text" class="form-control" id="dsp" name="dsp" required>
                     </div>
-                    <!-- ... rest of the form fields ... -->
+                    <div class="mb-3">
+                        <label for="distillery_name" class="form-label">Distillery Name:</label>
+                        <input type="text" class="form-control" id="distillery_name" name="distillery_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="parent_company_id" class="form-label">Parent Company:</label>
+                        <select class="form-select" id="parent_company_id" name="parent_company_id" required>
+                            <option value="" disabled selected>Select a Parent Company</option>
+                            {% for company in parent_companies %}
+                                <option value="{{ company.parent_company_id }}">{{ company.parent_company_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted mt-2">
+                            Can't find the parent company? <a href="#" onclick="showForm('parent_company')">Add a new Parent Company</a>.
+                        </small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="website" class="form-label">Website:</label>
+                        <input type="url" class="form-control" id="website" name="website">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address_1" class="form-label">Address 1:</label>
+                        <input type="text" class="form-control" id="address_1" name="address_1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address_2" class="form-label">Address 2:</label>
+                        <input type="text" class="form-control" id="address_2" name="address_2">
+                    </div>
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City:</label>
+                        <input type="text" class="form-control" id="city" name="city">
+                    </div>
+                    <div class="mb-3">
+                        <label for="state" class="form-label">State:</label>
+                        <input type="text" class="form-control" id="state" name="state">
+                    </div>
+                    <div class="mb-3">
+                        <label for="postal_code" class="form-label">Postal Code:</label>
+                        <input type="text" class="form-control" id="postal_code" name="postal_code">
+                    </div>
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country:</label>
+                        <input type="text" class="form-control" id="country" name="country">
+                    </div>
                     <button type="submit" class="btn btn-success">Add Distillery</button>
                     <button type="button" class="btn btn-secondary" onclick="hideForm('distillery')">Cancel</button>
                 </form>
@@ -89,7 +159,7 @@
                 <h3>Add Brand</h3>
             </div>
             <div class="card-body">
-                <form id="add_brand_form">
+                <form id="add_brand_form" method="POST" action="{{ url_for('add_brand') }}">
                     <!-- CSRF Token -->
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     
@@ -97,7 +167,22 @@
                         <label for="brand_name" class="form-label">Brand Name:</label>
                         <input type="text" class="form-control" id="brand_name" name="brand_name" required>
                     </div>
-                    <!-- ... rest of the form fields ... -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category:</label>
+                        <input type="text" class="form-control" id="category" name="category">
+                    </div>
+                    <div class="mb-3">
+                        <label for="distillery_id" class="form-label">Distillery:</label>
+                        <select class="form-select" id="distillery_id" name="distillery_id" required>
+                            <option value="" disabled selected>Select a Distillery</option>
+                            {% for distillery in distilleries %}
+                                <option value="{{ distillery.dsp }}">{{ distillery.distillery_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted mt-2">
+                            Can't find the distillery? <a href="#" onclick="showForm('distillery')">Add a new Distillery</a>.
+                        </small>
+                    </div>
                     <button type="submit" class="btn btn-success">Add Brand</button>
                     <button type="button" class="btn btn-secondary" onclick="hideForm('brand')">Cancel</button>
                 </form>
@@ -110,7 +195,7 @@
                 <h3>Add Bottle</h3>
             </div>
             <div class="card-body">
-                <form id="add_bottle_form">
+                <form id="add_bottle_form" method="POST" action="{{ url_for('add_bottle') }}">
                     <!-- CSRF Token -->
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     
@@ -126,264 +211,347 @@
                             Can't find the brand? <a href="#" onclick="showForm('brand')">Add a new Brand</a>.
                         </small>
                     </div>
-                    <!-- ... rest of the form fields ... -->
+                    <div class="mb-3">
+                        <label for="expression" class="form-label">Expression:</label>
+                        <input type="text" class="form-control" id="expression" name="expression">
+                    </div>
+                    <div class="mb-3">
+                        <label for="volume_ml" class="form-label">Volume (ml):</label>
+                        <input type="number" class="form-control" id="volume_ml" name="volume_ml">
+                    </div>
+                    <div class="mb-3">
+                        <label for="proof" class="form-label">Proof:</label>
+                        <input type="number" step="0.1" class="form-control" id="proof" name="proof">
+                    </div>
+                    <div class="mb-3">
+                        <label for="stated_age" class="form-label">Stated Age:</label>
+                        <input type="number" step="0.1" class="form-control" id="stated_age" name="stated_age">
+                    </div>
+                    <div class="mb-3">
+                        <label for="estimated_age" class="form-label">Estimated Age:</label>
+                        <input type="number" step="0.1" class="form-control" id="estimated_age" name="estimated_age">
+                    </div>
+                    <div class="mb-3">
+                        <label for="primary_grain" class="form-label">Primary Grain:</label>
+                        <input type="text" class="form-control" id="primary_grain" name="primary_grain">
+                    </div>
+                    <div class="mb-3">
+                        <label for="primary_grain_percentage" class="form-label">Primary Grain Percentage:</label>
+                        <input type="number" step="0.1" class="form-control" id="primary_grain_percentage" name="primary_grain_percentage">
+                    </div>
+                    <div class="mb-3">
+                        <label for="secondary_grain" class="form-label">Secondary Grain:</label>
+                        <input type="text" class="form-control" id="secondary_grain" name="secondary_grain">
+                    </div>
+                    <div class="mb-3">
+                        <label for="secondary_grain_percentage" class="form-label">Secondary Grain Percentage:</label>
+                        <input type="number" step="0.1" class="form-control" id="secondary_grain_percentage" name="secondary_grain_percentage">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tertiary_grain" class="form-label">Tertiary Grain:</label>
+                        <input type="text" class="form-control" id="tertiary_grain" name="tertiary_grain">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tertiary_grain_percentage" class="form-label">Tertiary Grain Percentage:</label>
+                        <input type="number" step="0.1" class="form-control" id="tertiary_grain_percentage" name="tertiary_grain_percentage">
+                    </div>
+                    <div class="mb-3">
+                        <label for="quaternary_grain" class="form-label">Quaternary Grain:</label>
+                        <input type="text" class="form-control" id="quaternary_grain" name="quaternary_grain">
+                    </div>
+                    <div class="mb-3">
+                        <label for="quaternary_grain_percentage" class="form-label">Quaternary Grain Percentage:</label>
+                        <input type="number" step="0.1" class="form-control" id="quaternary_grain_percentage" name="quaternary_grain_percentage">
+                    </div>
+                    <div class="mb-3">
+                        <label for="source" class="form-label">Source:</label>
+                        <input type="text" class="form-control" id="source" name="source">
+                    </div>
+                    <div class="mb-3">
+                        <label for="price_paid" class="form-label">Price Paid:</label>
+                        <input type="number" step="0.01" class="form-control" id="price_paid" name="price_paid">
+                    </div>
+                    <div class="mb-3">
+                        <label for="srp" class="form-label">Suggested Retail Price (SRP):</label>
+                        <input type="number" step="0.01" class="form-control" id="srp" name="srp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date_purchased" class="form-label">Date Purchased:</label>
+                        <input type="date" class="form-control" id="date_purchased" name="date_purchased">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date_distilled" class="form-label">Date Distilled:</label>
+                        <input type="date" class="form-control" id="date_distilled" name="date_distilled">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date_bottled" class="form-label">Date Bottled:</label>
+                        <input type="date" class="form-control" id="date_bottled" name="date_bottled">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date_opened" class="form-label">Date Opened:</label>
+                        <input type="date" class="form-control" id="date_opened" name="date_opened">
+                    </div>
+                    <div class="mb-3">
+                        <label for="date_emptied" class="form-label">Date Emptied:</label>
+                        <input type="date" class="form-control" id="date_emptied" name="date_emptied">
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="single_barrel" name="single_barrel">
+                        <label class="form-check-label" for="single_barrel">Single Barrel</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="chill_filtered" name="chill_filtered">
+                        <label class="form-check-label" for="chill_filtered">Chill Filtered</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="bottled_in_bond" name="bottled_in_bond">
+                        <label class="form-check-label" for="bottled_in_bond">Bottled in Bond</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="peated" name="peated">
+                        <label class="form-check-label" for="peated">Peated</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="finished" name="finished">
+                        <label class="form-check-label" for="finished">Finished</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes:</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
                     <button type="submit" class="btn btn-success">Add Bottle</button>
                     <button type="button" class="btn btn-secondary" onclick="hideForm('bottle')">Cancel</button>
                 </form>
             </div>
+
         </div>
 
-    </div>
+        <!-- Search and Results Section -->
+        <div class="mt-5">
 
-    <!-- Search and Results Section -->
-    <div class="mt-5">
+            <h2>Search Records</h2>
 
-        <h2>Search Records</h2>
+            <!-- Search Forms -->
+            <div id="search_forms">
 
-        <!-- Search Forms -->
-        <div id="search_forms">
-
-            <!-- Parent Company Search -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4>Search Parent Companies</h4>
+                <!-- Parent Company Search -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Search Parent Companies</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="search_parent_company_form" method="POST" action="{{ url_for('search_records') }}">
+                            <!-- CSRF Token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_pc_name" class="form-label">Parent Company Name:</label>
+                                    <input type="text" class="form-control" id="search_pc_name" name="parent_company_name">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_pc_city" class="form-label">City:</label>
+                                    <input type="text" class="form-control" id="search_pc_city" name="city">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_pc_country" class="form-label">Country:</label>
+                                    <input type="text" class="form-control" id="search_pc_country" name="country">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Search Parent Companies</button>
+                        </form>
+                        <div id="search_parent_company_results" class="mt-4"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form id="search_parent_company_form">
-                        <!-- CSRF Token -->
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="search_pc_name" class="form-label">Parent Company Name:</label>
-                                <input type="text" class="form-control" id="search_pc_name" name="parent_company_name">
+
+                <!-- Distillery Search -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Search Distilleries</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="search_distillery_form" method="POST" action="{{ url_for('search_records') }}">
+                            <!-- CSRF Token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_dist_name" class="form-label">Distillery Name:</label>
+                                    <input type="text" class="form-control" id="search_dist_name" name="distillery_name">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_dist_parent" class="form-label">Parent Company:</label>
+                                    <select class="form-select" id="search_dist_parent" name="parent_company_id">
+                                        <option value="" selected>Any</option>
+                                        {% for company in parent_companies %}
+                                            <option value="{{ company.parent_company_id }}">{{ company.parent_company_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_dist_country" class="form-label">Country:</label>
+                                    <input type="text" class="form-control" id="search_dist_country" name="country">
+                                </div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="search_pc_city" class="form-label">City:</label>
-                                <input type="text" class="form-control" id="search_pc_city" name="city">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="search_pc_country" class="form-label">Country:</label>
-                                <input type="text" class="form-control" id="search_pc_country" name="country">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Search Parent Companies</button>
-                    </form>
-                    <div id="search_parent_company_results" class="mt-4"></div>
+                            <button type="submit" class="btn btn-primary">Search Distilleries</button>
+                        </form>
+                        <div id="search_distillery_results" class="mt-4"></div>
+                    </div>
                 </div>
+
+                <!-- Brand Search -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Search Brands</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="search_brand_form" method="POST" action="{{ url_for('search_records') }}">
+                            <!-- CSRF Token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_brand_name" class="form-label">Brand Name:</label>
+                                    <input type="text" class="form-control" id="search_brand_name" name="brand_name">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_brand_category" class="form-label">Category:</label>
+                                    <input type="text" class="form-control" id="search_brand_category" name="category">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_brand_distillery" class="form-label">Distillery:</label>
+                                    <select class="form-select" id="search_brand_distillery" name="distillery_id">
+                                        <option value="" selected>Any</option>
+                                        {% for distillery in distilleries %}
+                                            <option value="{{ distillery.dsp }}">{{ distillery.distillery_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Search Brands</button>
+                        </form>
+                        <div id="search_brand_results" class="mt-4"></div>
+                    </div>
+                </div>
+
+                <!-- Bottle Search -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Search Bottles</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="search_bottle_form" method="POST" action="{{ url_for('search_records') }}">
+                            <!-- CSRF Token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_bottle_expression" class="form-label">Expression:</label>
+                                    <input type="text" class="form-control" id="search_bottle_expression" name="expression">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_bottle_brand" class="form-label">Brand:</label>
+                                    <select class="form-select" id="search_bottle_brand" name="brand_id">
+                                        <option value="" selected>Any</option>
+                                        {% for brand in brands %}
+                                            <option value="{{ brand.brand_id }}">{{ brand.brand_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="search_bottle_country" class="form-label">Country:</label>
+                                    <input type="text" class="form-control" id="search_bottle_country" name="country">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Search Bottles</button>
+                        </form>
+                        <div id="search_bottle_results" class="mt-4"></div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Repeat similar changes for Distillery, Brand, and Bottle Search Forms -->
-
         </div>
 
-    </div>
-
-    <!-- Display Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="mt-4">
-          {% for category, message in messages %}
-            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <!-- Display Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mt-4">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
             </div>
-          {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- Search Results Display -->
+        <div id="results_section" class="mt-5">
+            <!-- Search results will be dynamically injected here -->
         </div>
-      {% endif %}
-    {% endwith %}
-
-    <!-- Search Results Display -->
-    <div id="results_section" class="mt-5">
-        <!-- Search results will be dynamically injected here -->
     </div>
-</div>
 
-<!-- Include Bootstrap JS and jQuery (optional, but useful for AJAX and modals) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include Bootstrap JS and jQuery (optional, but useful for AJAX and modals) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- JavaScript to Handle Form Display, AJAX Submissions, and Search Operations -->
-<script>
-    // Function to show a specific form
-    function showForm(formId) {
-        // Hide all forms
-        $('#parent_company_form').hide();
-        $('#distillery_form').hide();
-        $('#brand_form').hide();
-        $('#bottle_form').hide();
+    <!-- JavaScript to Handle Form Display, AJAX Submissions, and Search Operations -->
+    <script>
+        // Function to show a specific form
+        function showForm(formId) {
+            // Hide all forms
+            $('#parent_company_form').hide();
+            $('#distillery_form').hide();
+            $('#brand_form').hide();
+            $('#bottle_form').hide();
 
-        // Show the selected form
-        $('#' + formId + '_form').show();
-    }
-
-    // Function to hide a specific form
-    function hideForm(formId) {
-        $('#' + formId + '_form').hide();
-    }
-
-    // Set up AJAX to include CSRF token in headers for all non-safe methods
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
-                xhr.setRequestHeader("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
-            }
+            // Show the selected form
+            $('#' + formId + '_form').show();
         }
-    });
 
-    // AJAX Submission for Parent Company Form
-    $('#add_parent_company_form').submit(function(event){
-        event.preventDefault(); // Prevent default form submission
+        // Function to hide a specific form
+        function hideForm(formId) {
+            $('#' + formId + '_form').hide();
+        }
 
-        $.ajax({
-            url: "{{ url_for('add_parent_company') }}",
-            type: "POST",
-            data: $(this).serialize(), // CSRF token is included via AJAX setup
-            success: function(response){
-                // Append the new Parent Company to the drop-downs
-                $('#parent_company_id').append('<option value="' + response.parent_company_id + '">' + response.parent_company_name + '</option>');
-                $('#search_dist_parent').append('<option value="' + response.parent_company_id + '">' + response.parent_company_name + '</option>');
-                
-                // Optionally, select the newly added Parent Company
-                $('#parent_company_id').val(response.parent_company_id);
-
-                // Hide the Parent Company form
-                hideForm('parent_company');
-
-                // Clear the form fields
-                $('#add_parent_company_form')[0].reset();
-
-                // Show a success message (optional)
-                alert('Parent Company added successfully!');
-            },
-            error: function(xhr){
-                // Display error message
-                if(xhr.responseJSON && xhr.responseJSON.error){
-                    alert('Error: ' + xhr.responseJSON.error);
-                } else {
-                    alert('An unexpected error occurred.');
+        // Set up AJAX to include CSRF token in headers for all non-safe methods
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", $('meta[name="csrf-token"]').attr('content'));
                 }
             }
         });
-    });
 
-    // Repeat similar AJAX setup for Distillery, Brand, and Bottle Forms
+        // AJAX Submission for Parent Company Form
+        $('#add_parent_company_form').submit(function(event){
+            event.preventDefault(); // Prevent default form submission
 
-    // AJAX Submission for Distillery Form
-    $('#add_distillery_form').submit(function(event){
-        event.preventDefault();
-
-        $.ajax({
-            url: "{{ url_for('add_distillery') }}",
-            type: "POST",
-            data: $(this).serialize(),
-            success: function(response){
-                // Append the new Distillery to the drop-downs
-                $('#distillery_id').append('<option value="' + response.dsp + '">' + response.distillery_name + '</option>');
-                $('#search_distillery_distillery_id').append('<option value="' + response.dsp + '">' + response.distillery_name + '</option>');
-
-                // Optionally, select the newly added Distillery
-                $('#distillery_id').val(response.dsp);
-
-                // Hide the Distillery form
-                hideForm('distillery');
-
-                // Clear the form fields
-                $('#add_distillery_form')[0].reset();
-
-                alert('Distillery added successfully!');
-            },
-            error: function(xhr){
-                if(xhr.responseJSON && xhr.responseJSON.error){
-                    alert('Error: ' + xhr.responseJSON.error);
-                } else {
-                    alert('An unexpected error occurred.');
-                }
-            }
-        });
-    });
-
-    // AJAX Submission for Brand Form
-    $('#add_brand_form').submit(function(event){
-        event.preventDefault();
-
-        $.ajax({
-            url: "{{ url_for('add_brand') }}",
-            type: "POST",
-            data: $(this).serialize(),
-            success: function(response){
-                // Append the new Brand to the drop-downs
-                $('#brand_id').append('<option value="' + response.brand_id + '">' + response.brand_name + '</option>');
-                $('#search_bottle_brand').append('<option value="' + response.brand_id + '">' + response.brand_name + '</option>');
-
-                // Optionally, select the newly added Brand
-                $('#brand_id').val(response.brand_id);
-
-                // Hide the Brand form
-                hideForm('brand');
-
-                // Clear the form fields
-                $('#add_brand_form')[0].reset();
-
-                alert('Brand added successfully!');
-            },
-            error: function(xhr){
-                if(xhr.responseJSON && xhr.responseJSON.error){
-                    alert('Error: ' + xhr.responseJSON.error);
-                } else {
-                    alert('An unexpected error occurred.');
-                }
-            }
-        });
-    });
-
-    // AJAX Submission for Bottle Form
-    $('#add_bottle_form').submit(function(event){
-        event.preventDefault();
-
-        $.ajax({
-            url: "{{ url_for('add_bottle') }}",
-            type: "POST",
-            data: $(this).serialize(),
-            dataType: "json",
-            success: function(response){
-                // Optionally, refresh the page or display a success message
-                alert('Bottle added successfully!');
-                $('#add_bottle_form')[0].reset();
-            },
-            error: function(xhr){
-                if(xhr.responseJSON && xhr.responseJSON.error){
-                    alert('Error: ' + xhr.responseJSON.error);
-                } else {
-                    alert('An unexpected error occurred.');
-                }
-            }
-        });
-    });
-
-    // AJAX Submission for Deleting Records
-    function deleteRecord(table, id) {
-        console.log(`Attempting to delete record from table: ${table}, ID: ${id}`);
-        if(confirm('Are you sure you want to delete this record?')){
             $.ajax({
-                url: "/assignment/delete/" + id,
+                url: "{{ url_for('add_parent_company') }}",
                 type: "POST",
-                data: {
-                    table: table,
-                    id: id
-                },
+                data: $(this).serialize(), // CSRF token is included via AJAX setup
                 success: function(response){
-                    console.log('Delete response:', response);
-                    if(response.success){
-                        alert('Record deleted successfully!');
-                        // Remove the row from the table
-                        $('#record_' + table + '_' + id).remove();
-                    } else {
-                        alert('Error: ' + response.error);
-                    }
+                    // Append the new Parent Company to the drop-downs
+                    $('#parent_company_id').append('<option value="' + response.parent_company_id + '">' + response.parent_company_name + '</option>');
+                    $('#search_dist_parent').append('<option value="' + response.parent_company_id + '">' + response.parent_company_name + '</option>');
+                    
+                    // Optionally, select the newly added Parent Company
+                    $('#parent_company_id').val(response.parent_company_id);
+
+                    // Hide the Parent Company form
+                    hideForm('parent_company');
+
+                    // Clear the form fields
+                    $('#add_parent_company_form')[0].reset();
+
+                    // Show a success message (optional)
+                    alert('Parent Company added successfully!');
                 },
                 error: function(xhr){
-                    console.error('Delete error:', xhr);
+                    // Display error message
                     if(xhr.responseJSON && xhr.responseJSON.error){
                         alert('Error: ' + xhr.responseJSON.error);
                     } else {
@@ -391,156 +559,383 @@
                     }
                 }
             });
+        });
+
+        // AJAX Submission for Distillery Form
+        $('#add_distillery_form').submit(function(event){
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ url_for('add_distillery') }}",
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(response){
+                    // Append the new Distillery to the drop-downs
+                    $('#distillery_id').append('<option value="' + response.dsp + '">' + response.distillery_name + '</option>');
+                    $('#search_distillery_distillery_id').append('<option value="' + response.dsp + '">' + response.distillery_name + '</option>');
+
+                    // Optionally, select the newly added Distillery
+                    $('#distillery_id').val(response.dsp);
+
+                    // Hide the Distillery form
+                    hideForm('distillery');
+
+                    // Clear the form fields
+                    $('#add_distillery_form')[0].reset();
+
+                    alert('Distillery added successfully!');
+                },
+                error: function(xhr){
+                    if(xhr.responseJSON && xhr.responseJSON.error){
+                        alert('Error: ' + xhr.responseJSON.error);
+                    } else {
+                        alert('An unexpected error occurred.');
+                    }
+                }
+            });
+        });
+
+        // AJAX Submission for Brand Form
+        $('#add_brand_form').submit(function(event){
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ url_for('add_brand') }}",
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(response){
+                    // Append the new Brand to the drop-downs
+                    $('#brand_id').append('<option value="' + response.brand_id + '">' + response.brand_name + '</option>');
+                    $('#search_bottle_brand').append('<option value="' + response.brand_id + '">' + response.brand_name + '</option>');
+
+                    // Optionally, select the newly added Brand
+                    $('#brand_id').val(response.brand_id);
+
+                    // Hide the Brand form
+                    hideForm('brand');
+
+                    // Clear the form fields
+                    $('#add_brand_form')[0].reset();
+
+                    alert('Brand added successfully!');
+                },
+                error: function(xhr){
+                    if(xhr.responseJSON && xhr.responseJSON.error){
+                        alert('Error: ' + xhr.responseJSON.error);
+                    } else {
+                        alert('An unexpected error occurred.');
+                    }
+                }
+            });
+        });
+
+        // AJAX Submission for Bottle Form
+        $('#add_bottle_form').submit(function(event){
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ url_for('add_bottle') }}",
+                type: "POST",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function(response){
+                    // Optionally, refresh the page or display a success message
+                    alert('Bottle added successfully!');
+                    $('#add_bottle_form')[0].reset();
+                },
+                error: function(xhr){
+                    if(xhr.responseJSON && xhr.responseJSON.error){
+                        alert('Error: ' + xhr.responseJSON.error);
+                    } else {
+                        alert('An unexpected error occurred.');
+                    }
+                }
+            });
+        });
+
+        // AJAX Submission for Deleting Records
+        function deleteRecord(table, id) {
+            console.log(`Attempting to delete record from table: ${table}, ID: ${id}`);
+            if(confirm('Are you sure you want to delete this record?')){
+                $.ajax({
+                    url: "/assignment/delete/" + id,
+                    type: "POST",
+                    data: {
+                        table: table,
+                        id: id
+                    },
+                    success: function(response){
+                        console.log('Delete response:', response);
+                        if(response.success){
+                            alert('Record deleted successfully!');
+                            // Remove the row from the table
+                            $('#record_' + table + '_' + id).remove();
+                        } else {
+                            alert('Error: ' + response.error);
+                        }
+                    },
+                    error: function(xhr){
+                        console.error('Delete error:', xhr);
+                        if(xhr.responseJSON && xhr.responseJSON.error){
+                            alert('Error: ' + xhr.responseJSON.error);
+                        } else {
+                            alert('An unexpected error occurred.');
+                        }
+                    }
+                });
+            }
         }
-    }
 
-    // AJAX Submission for Searching Records
-    $('#search_parent_company_form').submit(function(event){
-        event.preventDefault();
+        // AJAX Submission for Searching Records
+        $('#search_parent_company_form').submit(function(event){
+            event.preventDefault();
 
-        $.ajax({
-            url: "{{ url_for('search_records') }}",
-            type: "POST",
-            data: {
-                table: 'parent_company',
-                parent_company_name: $('#search_pc_name').val(),
-                city: $('#search_pc_city').val(),
-                country: $('#search_pc_country').val()
-            },
-            success: function(response){
-                let resultsDiv = $('#search_parent_company_results');
-                resultsDiv.empty();
+            $.ajax({
+                url: "{{ url_for('search_records') }}",
+                type: "POST",
+                data: {
+                    table: 'parent_company',
+                    parent_company_name: $('#search_pc_name').val(),
+                    city: $('#search_pc_city').val(),
+                    country: $('#search_pc_country').val()
+                },
+                success: function(response){
+                    let resultsDiv = $('#search_parent_company_results');
+                    resultsDiv.empty();
 
-                if(response.results.length === 0){
-                    resultsDiv.append('<p>No Parent Companies found.</p>');
-                } else {
-                    let table = '<table class="table table-striped">';
-                    table += '<thead><tr><th>ID</th><th>Name</th><th>Website</th><th>Address 1</th><th>Address 2</th><th>City</th><th>State</th><th>Postal Code</th><th>Country</th><th>Actions</th></tr></thead><tbody>';
-                    response.results.forEach(function(record){
-                        table += `<tr id="record_parent_company_${record.parent_company_id}">
-                                    <td>${record.parent_company_id}</td>
-                                    <td>${record.parent_company_name}</td>
-                                    <td>${record.website || ''}</td>
-                                    <td>${record.address_1 || ''}</td>
-                                    <td>${record.address_2 || ''}</td>
-                                    <td>${record.city || ''}</td>
-                                    <td>${record.state || ''}</td>
-                                    <td>${record.postal_code || ''}</td>
-                                    <td>${record.country || ''}</td>
-                                    <td>
-                                        <button class="btn btn-primary btn-sm" onclick="openEditModal('parent_company', ${record.parent_company_id})">Edit</button>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteRecord('parent_company', ${record.parent_company_id})">Delete</button>
-                                    </td>
-                                  </tr>`;
-                    });
-                    table += '</tbody></table>';
-                    resultsDiv.append(table);
+                    if(response.results.length === 0){
+                        resultsDiv.append('<p>No Parent Companies found.</p>');
+                    } else {
+                        let table = '<table class="table table-striped">';
+                        table += '<thead><tr><th>ID</th><th>Name</th><th>Website</th><th>Address 1</th><th>Address 2</th><th>City</th><th>State</th><th>Postal Code</th><th>Country</th><th>Actions</th></tr></thead><tbody>';
+                        response.results.forEach(function(record){
+                            table += `<tr id="record_parent_company_${record.parent_company_id}">
+                                        <td>${record.parent_company_id}</td>
+                                        <td>${record.parent_company_name}</td>
+                                        <td>${record.website || ''}</td>
+                                        <td>${record.address_1 || ''}</td>
+                                        <td>${record.address_2 || ''}</td>
+                                        <td>${record.city || ''}</td>
+                                        <td>${record.state || ''}</td>
+                                        <td>${record.postal_code || ''}</td>
+                                        <td>${record.country || ''}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" onclick="openEditModal('parent_company', ${record.parent_company_id})">Edit</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteRecord('parent_company', ${record.parent_company_id})">Delete</button>
+                                        </td>
+                                      </tr>`;
+                        });
+                        table += '</tbody></table>';
+                        resultsDiv.append(table);
+                    }
+                },
+                error: function(xhr){
+                    if(xhr.responseJSON && xhr.responseJSON.error){
+                        alert('Error: ' + xhr.responseJSON.error);
+                    } else {
+                        alert('An unexpected error occurred.');
+                    }
                 }
-            },
-            error: function(xhr){
-                if(xhr.responseJSON && xhr.responseJSON.error){
-                    alert('Error: ' + xhr.responseJSON.error);
-                } else {
-                    alert('An unexpected error occurred.');
-                }
-            }
+            });
         });
-    });
 
-    // Repeat similar AJAX search setups for Distillery, Brand, and Bottle Searches
+        // Repeat similar AJAX search setups for Distillery, Brand, and Bottle Searches
 
-    $('#search_distillery_form').submit(function(event){
-        event.preventDefault();
+        $('#search_distillery_form').submit(function(event){
+            event.preventDefault();
 
-        $.ajax({
-            url: "{{ url_for('search_records') }}",
-            type: "POST",
-            data: {
-                table: 'distillery',
-                distillery_name: $('#search_dist_name').val(),
-                parent_company_id: $('#search_dist_parent').val(),
-                country: $('#search_dist_country').val()
-            },
-            success: function(response){
-                let resultsDiv = $('#search_distillery_results');
-                resultsDiv.empty();
+            $.ajax({
+                url: "{{ url_for('search_records') }}",
+                type: "POST",
+                data: {
+                    table: 'distillery',
+                    distillery_name: $('#search_dist_name').val(),
+                    parent_company_id: $('#search_dist_parent').val(),
+                    country: $('#search_dist_country').val()
+                },
+                success: function(response){
+                    let resultsDiv = $('#search_distillery_results');
+                    resultsDiv.empty();
 
-                if(response.results.length === 0){
-                    resultsDiv.append('<p>No Distilleries found.</p>');
-                } else {
-                    let table = '<table class="table table-striped">';
-                    table += '<thead><tr><th>DSP</th><th>Name</th><th>Parent Company ID</th><th>Website</th><th>Address 1</th><th>Address 2</th><th>City</th><th>State</th><th>Postal Code</th><th>Country</th><th>Actions</th></tr></thead><tbody>';
-                    response.results.forEach(function(record){
-                        table += `<tr id="record_distillery_${record.dsp}">
-                                    <td>${record.dsp}</td>
-                                    <td>${record.distillery_name}</td>
-                                    <td>${record.parent_company_id}</td>
-                                    <td>${record.website || ''}</td>
-                                    <td>${record.address_1 || ''}</td>
-                                    <td>${record.address_2 || ''}</td>
-                                    <td>${record.city || ''}</td>
-                                    <td>${record.state || ''}</td>
-                                    <td>${record.postal_code || ''}</td>
-                                    <td>${record.country || ''}</td>
-                                    <td>
-                                        <button class="btn btn-primary btn-sm" onclick="openEditModal('distillery', '${record.dsp}')">Edit</button>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteRecord('distillery', '${record.dsp}')">Delete</button>
-                                    </td>
-                                  </tr>`;
-                    });
-                    table += '</tbody></table>';
-                    resultsDiv.append(table);
+                    if(response.results.length === 0){
+                        resultsDiv.append('<p>No Distilleries found.</p>');
+                    } else {
+                        let table = '<table class="table table-striped">';
+                        table += '<thead><tr><th>DSP</th><th>Name</th><th>Parent Company ID</th><th>Website</th><th>Address 1</th><th>Address 2</th><th>City</th><th>State</th><th>Postal Code</th><th>Country</th><th>Actions</th></tr></thead><tbody>';
+                        response.results.forEach(function(record){
+                            table += `<tr id="record_distillery_${record.dsp}">
+                                        <td>${record.dsp}</td>
+                                        <td>${record.distillery_name}</td>
+                                        <td>${record.parent_company_id}</td>
+                                        <td>${record.website || ''}</td>
+                                        <td>${record.address_1 || ''}</td>
+                                        <td>${record.address_2 || ''}</td>
+                                        <td>${record.city || ''}</td>
+                                        <td>${record.state || ''}</td>
+                                        <td>${record.postal_code || ''}</td>
+                                        <td>${record.country || ''}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" onclick="openEditModal('distillery', '${record.dsp}')">Edit</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteRecord('distillery', '${record.dsp}')">Delete</button>
+                                        </td>
+                                      </tr>`;
+                        });
+                        table += '</tbody></table>';
+                        resultsDiv.append(table);
+                    }
+                },
+                error: function(xhr){
+                    if(xhr.responseJSON && xhr.responseJSON.error){
+                        alert('Error: ' + xhr.responseJSON.error);
+                    } else {
+                        alert('An unexpected error occurred.');
+                    }
                 }
-            },
-            error: function(xhr){
-                if(xhr.responseJSON && xhr.responseJSON.error){
-                    alert('Error: ' + xhr.responseJSON.error);
-                } else {
-                    alert('An unexpected error occurred.');
-                }
-            }
+            });
         });
-    });
 
-    // Similarly update search_brand_form and search_bottle_form
-</script>
-<!-- Edit Record Modal -->
-<div class="modal fade" id="editRecordModal" tabindex="-1" aria-labelledby="editRecordModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form id="editRecordForm">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editRecordModalLabel">Edit Record</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <!-- Dynamic Form Fields Will Be Injected Here -->
-            <div id="editFormFields">
-              <!-- Example Fields (Adjust Based on Model) -->
-              <div class="mb-3">
-                <label for="edit_name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="edit_name" name="name" required>
+        $('#search_brand_form').submit(function(event){
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ url_for('search_records') }}",
+                type: "POST",
+                data: {
+                    table: 'brand',
+                    brand_name: $('#search_brand_name').val(),
+                    category: $('#search_brand_category').val(),
+                    distillery_id: $('#search_brand_distillery').val()
+                },
+                success: function(response){
+                    let resultsDiv = $('#search_brand_results');
+                    resultsDiv.empty();
+
+                    if(response.results.length === 0){
+                        resultsDiv.append('<p>No Brands found.</p>');
+                    } else {
+                        let table = '<table class="table table-striped">';
+                        table += '<thead><tr><th>Brand ID</th><th>Name</th><th>Category</th><th>Distillery ID</th><th>Actions</th></tr></thead><tbody>';
+                        response.results.forEach(function(record){
+                            table += `<tr id="record_brand_${record.brand_id}">
+                                        <td>${record.brand_id}</td>
+                                        <td>${record.brand_name}</td>
+                                        <td>${record.category || ''}</td>
+                                        <td>${record.distillery_id}</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" onclick="openEditModal('brand', ${record.brand_id})">Edit</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteRecord('brand', ${record.brand_id})">Delete</button>
+                                        </td>
+                                      </tr>`;
+                        });
+                        table += '</tbody></table>';
+                        resultsDiv.append(table);
+                    }
+                },
+                error: function(xhr){
+                    if(xhr.responseJSON && xhr.responseJSON.error){
+                        alert('Error: ' + xhr.responseJSON.error);
+                    } else {
+                        alert('An unexpected error occurred.');
+                    }
+                }
+            });
+        });
+
+        $('#search_bottle_form').submit(function(event){
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ url_for('search_records') }}",
+                type: "POST",
+                data: {
+                    table: 'bottle',
+                    expression: $('#search_bottle_expression').val(),
+                    brand_id: $('#search_bottle_brand').val(),
+                    country: $('#search_bottle_country').val()
+                },
+                success: function(response){
+                    let resultsDiv = $('#search_bottle_results');
+                    resultsDiv.empty();
+
+                    if(response.results.length === 0){
+                        resultsDiv.append('<p>No Bottles found.</p>');
+                    } else {
+                        let table = '<table class="table table-striped">';
+                        table += '<thead><tr><th>Bottle ID</th><th>Brand ID</th><th>Expression</th><th>Volume (ml)</th><th>Proof</th><th>Stated Age</th><th>Estimated Age</th><th>Primary Grain</th><th>Primary Grain %</th><th>Secondary Grain</th><th>Secondary Grain %</th><th>...</th><th>Actions</th></tr></thead><tbody>';
+                        response.results.forEach(function(record){
+                            table += `<tr id="record_bottle_${record.bottle_id}">
+                                        <td>${record.bottle_id}</td>
+                                        <td>${record.brand_id}</td>
+                                        <td>${record.expression || ''}</td>
+                                        <td>${record.volume_ml || ''}</td>
+                                        <td>${record.proof || ''}</td>
+                                        <td>${record.stated_age || ''}</td>
+                                        <td>${record.estimated_age || ''}</td>
+                                        <td>${record.primary_grain || ''}</td>
+                                        <td>${record.primary_grain_percentage || ''}</td>
+                                        <td>${record.secondary_grain || ''}</td>
+                                        <td>${record.secondary_grain_percentage || ''}</td>
+                                        <!-- Add other fields as needed -->
+                                        <td>...</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" onclick="openEditModal('bottle', ${record.bottle_id})">Edit</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteRecord('bottle', ${record.bottle_id})">Delete</button>
+                                        </td>
+                                      </tr>`;
+                        });
+                        table += '</tbody></table>';
+                        resultsDiv.append(table);
+                    }
+                },
+                error: function(xhr){
+                    if(xhr.responseJSON && xhr.responseJSON.error){
+                        alert('Error: ' + xhr.responseJSON.error);
+                    } else {
+                        alert('An unexpected error occurred.');
+                    }
+                }
+            });
+        });
+
+    </script>
+    <!-- Edit Record Modal -->
+    <div class="modal fade" id="editRecordModal" tabindex="-1" aria-labelledby="editRecordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form id="editRecordForm" method="POST" action="{{ url_for('edit_record') }}">
+              <!-- CSRF Token -->
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              
+              <div class="modal-header">
+                <h5 class="modal-title" id="editRecordModalLabel">Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <!-- Add other fields as necessary -->
-              <!-- Date Fields -->
-              <div class="mb-3">
-                <label for="edit_date_purchased" class="form-label">Date Purchased</label>
-                <input type="date" class="form-control" id="edit_date_purchased" name="date_purchased">
+              <div class="modal-body">
+                <!-- Dynamic Form Fields Will Be Injected Here -->
+                <div id="editFormFields">
+                  <!-- Example Fields (Adjust Based on Model) -->
+                  <div class="mb-3">
+                    <label for="edit_name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="edit_name" name="name" required>
+                  </div>
+                  <!-- Add other fields as necessary -->
+                  <!-- Date Fields -->
+                  <div class="mb-3">
+                    <label for="edit_date_purchased" class="form-label">Date Purchased</label>
+                    <input type="date" class="form-control" id="edit_date_purchased" name="date_purchased">
+                  </div>
+                  <!-- Continue adding fields based on Bottle model -->
+                </div>
+                <!-- Hidden Fields -->
+                <input type="hidden" id="edit_table" name="table">
+                <input type="hidden" id="edit_id" name="id">
               </div>
-              <!-- Continue adding fields based on Bottle model -->
-            </div>
-            <!-- Hidden Fields -->
-            <input type="hidden" id="edit_table" name="table">
-            <input type="hidden" id="edit_id" name="id">
-            <!-- CSRF Token -->
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              </div>
+            </form>
           </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          </div>
-        </form>
+        </div>
       </div>
-    </div>
-  </div>
 {% endblock %}
